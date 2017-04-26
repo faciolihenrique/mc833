@@ -62,7 +62,7 @@ int main(int argc, char * argv[])
         printf("Problem occurred when connecting\n");
         return -4;
     }
-   
+
     printf("Escreva a mensagem a ser enviada\n");
     bzero(buf,MAX_LINE);
     bzero(msg, MAX_LINE);
@@ -77,6 +77,4 @@ int main(int argc, char * argv[])
         return -6;
     }
     printf("%s", msg);
-    /* ler e enviar linhas de texto, receber eco */
-
 }
