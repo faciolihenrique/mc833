@@ -7,9 +7,8 @@
 #define LISTEN_PORT 12345
 #define MAX_PENDING 5
 #define MAX_LINE 2048
-#define ackMSG "42\n"
-#define ackMSGSize 3
-//sin_addr-s_addrhtonl(INADDR_ANY)
+#define ackMSGSize 700
+//#define httpMSG "HTTP/1.1 200 OK\r\nCache-Control: no-cache, private\r\nContent-Length: 107\r\nContent-Type: text/html\r\nDate: Mon, 24 Nov 2014 10:21:21 GMT\r\n\r\nHello, World!\n"
 
 int main(int argc, char * argv[])
 {
@@ -75,11 +74,11 @@ int main(int argc, char * argv[])
         }
         if( recv(newsoc, (void*) buf, MAX_LINE, 0) ) {
             printf("Message received\n");
-            printf("\tFrom: %d\n", client_sa.sin_addr.s_addr);
-            printf("\tMessage:\n %s\n", buf);
+            printf("From: %d\n", client_sa.sin_addr.s_addr);
+            printf("Message:\n %s\n", buf);
         }
 
-        send(newsoc, (const void*) ackMSG, ackMSGSize, 0);
+        send(newsoc, (const void*) buf, strlen(buf) + 1, 0);
 
         newsoc = accept(s, (struct sockaddr *) &client_sa, &len);
     }
