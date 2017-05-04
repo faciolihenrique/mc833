@@ -16,9 +16,8 @@ int main(int argc, char * argv[])
 {
     struct hostent *host_address;
     struct sockaddr_in socket_address;
-    char *host;
     char buf[MAX_LINE], msg[MAX_LINE];
-    int s, len, port, c;
+    int s, port, c;
 
     /* Checking arguments */
     if (argc < 2){
