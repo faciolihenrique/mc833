@@ -15,10 +15,11 @@
 
 int main(int argc, char * argv[])
 {
-	struct sockaddr_in socket_address, client_sa, client_helper;
+	struct sockaddr_in socket_address, client_helper;
     char buf[MAX_LINE];
     unsigned int len;
-    int s, port, b, l, newsoc;
+    int s, port, b, l, newsoc, maxfd, sockfd, cliente_num, nready, i, clientes[FD_SETSIZE];
+    fd_set todos_fds, novo_set;
 
     /* If no arg is passed, uses PORT 12345
      * else, uses the port passed
@@ -67,45 +68,81 @@ int main(int argc, char * argv[])
         return -3;
     }
 
-	/* Aguarda/aceita conexão */
-    len = sizeof(client_sa);
+
+    maxfd = s;
+    cliente_num = -1;
+    for (i = 0; i < FD_SETSIZE; i++)
+        clientes[i] = -1;
+
+    FD_ZERO(&todos_fds);
+    FD_SET(s, &todos_fds);
 
     while(1){
-        newsoc = accept(s, (struct sockaddr *) &client_sa, &len);
-
-        if(newsoc < 0){
-            printf("Problem on creaing a new connection\n");
+        novo_set = todos_fds;
+        nready = select(maxfd+1, &novo_set, NULL, NULL, NULL);
+        if(nready < 0) {
+            printf("Failed to use select\n");
+            return -4;
         }
 
-        int pid = fork();
-        /* pid = 0 => Processo pai
-         * pid > 0 => Processo filho
-         * pid < 0 => erro
-         */
-        if (pid < 0){
-            printf("Failed to create a new fork\n");
-            close(newsoc);
-        } else if (pid > 0) {
-            int i = getpeername(newsoc, (struct sockaddr *) &client_helper, &len);
+        if(FD_ISSET(s, &novo_set)) {
+            len = sizeof(socket_address);
+            newsoc = accept(s, (struct sockaddr *)&socket_address, &len);
 
-            if (i < 0){
-                printf("Failed to estabilsh connect\n");
-            } else {
-                printf("New client connected!\n");
-                printf("Port: %d", ntohs(client_helper.sin_port));
-                printf("\tFrom: %s\n", inet_ntoa(client_helper.sin_addr));
-
-                if( recv(newsoc, (void*) buf, MAX_LINE, 0) ) {
-                    printf("Message received\n");
-                    printf("Port: %d", ntohs(client_helper.sin_port));
-                    printf("  From: %s\n", inet_ntoa(client_helper.sin_addr));
-                    printf("Message:\n %s\n", buf);
+            if(newsoc < 0) {
+                printf("Problem on creaing a new connection\n");
+                return -5;
+            }
+            for (i = 0; i < FD_SETSIZE; i++) {
+                if (clientes[i] < 0) {
+                    clientes[i] = newsoc; 	//guarda descritor
+                    break;
                 }
-                send(newsoc, (const void*) buf, strlen(buf) + 1, 0);
+            }
+            if (i == FD_SETSIZE) {
+                printf("Maximum number of clients already established\n");
+             		return -6;
+            }
+
+            FD_SET(newsoc, &todos_fds);		// adiciona novo descritor ao conjunto
+            if (newsoc > maxfd)
+                maxfd = newsoc;			// para o select
+            if (i > cliente_num)
+                cliente_num = i;		// Ã­ndice mÃ¡ximo no vetor clientes[]
+            if (--nready <= 0)
+                continue;			// nÃ£o existem mais descritores para serem lidos
+        }
+
+        for (i = 0; i <= cliente_num; i++) {	// verificar se hÃ¡ dados em todos os clientes
+            if ( (sockfd = clientes[i]) < 0)
+                continue;
+            if (FD_ISSET(sockfd, &novo_set)) {
+                if ( (len = recv(sockfd, buf, sizeof(buf), 0)) == 0) {
+                    //conexÃ£o encerrada pelo cliente
+                    close(sockfd);
+                    FD_CLR(sockfd, &todos_fds);
+                    clientes[i] = -1;
+                } else {
+                    int t = getpeername(newsoc, (struct sockaddr *) &client_helper, &len);
+                    if (t < 0){
+                        printf("Failed to estabilsh connect\n");
+                    } else {
+                        printf("New client connected!\n");
+                        printf("Port: %d", ntohs(client_helper.sin_port));
+                        printf("\tFrom: %s\n", inet_ntoa(client_helper.sin_addr));
+
+                        if( recv(newsoc, (void*) buf, MAX_LINE, 0) ) {
+                            printf("Message received\n");
+                            printf("Port: %d", ntohs(client_helper.sin_port));
+                            printf("  From: %s\n", inet_ntoa(client_helper.sin_addr));
+                            printf("Message:\n %s\n", buf);
+                        }
+                        send(newsoc, (const void*) buf, strlen(buf) + 1, 0);
+                    }
+                }
+                if (--nready <= 0)
+                    break;				// nÃ£o existem mais descritores para serem lidos
             }
         }
-        // Caso
     }
-    printf("Finishing Server\n");
-    return 0;
 }
