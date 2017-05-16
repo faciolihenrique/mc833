@@ -93,7 +93,7 @@ int main(int argc, char * argv[])
             newsoc = accept(s, (struct sockaddr *)&socket_address, &len);
             /* Problema na conexao */
             if(newsoc < 0) {
-                printf("Problem on creaing a new connection\n");
+                printf("Problem on creating a new connection\n");
                 return -5;
             }
 
@@ -129,7 +129,7 @@ int main(int argc, char * argv[])
                 continue;		         	// Não existem mais descritores para serem lidos
         }
 
-        /* Verifica se há novas entradas nos socketes dos clientes */
+        /* Verifica se há novas entradas nos sockets dos clientes */
         for (i = 0; i <= cliente_num; i++) {
             sockfd = clientes[i];
             /* Se for >= 0 então existe um sockfd */
