@@ -104,7 +104,6 @@ int main(int argc, char * argv[])
                 send(newsoc, (const void*) buf, strlen(buf) + 1, 0);
             }
         }
-        // Caso
     }
     printf("Finishing Server\n");
     return 0;
