@@ -10,11 +10,10 @@ run_server: server
 	exec server
 
 client: client.c
-	$(CC) $(CFLAGS) client.c -o client
+	$(CC) $(CFLAGS) client.c -o client.out
 
 serever: server.c
-	$(CC) $(CFLAGS) server.c -o server
+	$(CC) $(CFLAGS) server.c -o server.out
 
-clean: 
-	rm -rf server client
-
+clean:
+	rm -rf server.out client.out
