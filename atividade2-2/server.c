@@ -68,7 +68,7 @@ int main(int argc, char * argv[])
         return -3;
     }
 
-
+    /* Inicializa os clientes */
     maxfd = s;
     cliente_num = -1;
     for (i = 0; i < FD_SETSIZE; i++)
@@ -85,17 +85,33 @@ int main(int argc, char * argv[])
             return -4;
         }
 
+        /* Se algo acontecer no socket s - é uma conexão nova */
         if(FD_ISSET(s, &novo_set)) {
             len = sizeof(socket_address);
-            newsoc = accept(s, (struct sockaddr *)&socket_address, &len);
 
+            /* Cria um novo socket de entrada */
+            newsoc = accept(s, (struct sockaddr *)&socket_address, &len);
+            /* Problema na conexao */
             if(newsoc < 0) {
                 printf("Problem on creaing a new connection\n");
                 return -5;
             }
+
+            /* Imprime informações desse novo socket */
+            int t = getpeername(newsoc, (struct sockaddr *) &client_helper, &len);
+            if (t < 0){
+                printf("Failed to estabilsh connect\n");
+            } else {
+                printf("New client connected!\n");
+                printf("Port: %d", ntohs(client_helper.sin_port));
+                printf("\tFrom: %s\n", inet_ntoa(client_helper.sin_addr));
+            }
+
+
+            /* Adiciona o novo socket no vetor de clientes */
             for (i = 0; i < FD_SETSIZE; i++) {
                 if (clientes[i] < 0) {
-                    clientes[i] = newsoc; 	//guarda descritor
+                    clientes[i] = newsoc;
                     break;
                 }
             }
@@ -106,42 +122,46 @@ int main(int argc, char * argv[])
 
             FD_SET(newsoc, &todos_fds);		// adiciona novo descritor ao conjunto
             if (newsoc > maxfd)
-                maxfd = newsoc;			// para o select
+                maxfd = newsoc;			    // para o select
             if (i > cliente_num)
-                cliente_num = i;		// Ã­ndice mÃ¡ximo no vetor clientes[]
+                cliente_num = i;	       	// Ã­ndice mÃ¡ximo no vetor clientes[]
             if (--nready <= 0)
-                continue;			// nÃ£o existem mais descritores para serem lidos
+                continue;		         	// nÃ£o existem mais descritores para serem lidos
         }
 
-        for (i = 0; i <= cliente_num; i++) {	// verificar se hÃ¡ dados em todos os clientes
-            if ( (sockfd = clientes[i]) < 0)
-                continue;
-            if (FD_ISSET(sockfd, &novo_set)) {
-                if ( (len = recv(sockfd, buf, sizeof(buf), 0)) == 0) {
-                    //conexÃ£o encerrada pelo cliente
-                    close(sockfd);
-                    FD_CLR(sockfd, &todos_fds);
-                    clientes[i] = -1;
-                } else {
-                    int t = getpeername(newsoc, (struct sockaddr *) &client_helper, &len);
-                    if (t < 0){
-                        printf("Failed to estabilsh connect\n");
-                    } else {
-                        printf("New client connected!\n");
-                        printf("Port: %d", ntohs(client_helper.sin_port));
-                        printf("\tFrom: %s\n", inet_ntoa(client_helper.sin_addr));
+        /* Verifica se há novas entradas nos socketes dos clientes */
+        for (i = 0; i <= cliente_num; i++) {
+            sockfd = clientes[i];
+            /* Se for >= 0 então existe um sockfd */
+            if (sockfd >= 0) {
 
-                        if( recv(newsoc, (void*) buf, MAX_LINE, 0) ) {
-                            printf("Message received\n");
-                            printf("Port: %d", ntohs(client_helper.sin_port));
-                            printf("  From: %s\n", inet_ntoa(client_helper.sin_addr));
-                            printf("Message:\n %s\n", buf);
-                        }
-                        send(newsoc, (const void*) buf, strlen(buf) + 1, 0);
+                len = sizeof(client_helper);
+                getpeername(sockfd, (struct sockaddr *) &client_helper, &len);
+
+                /* Se há modificação no socket - entao ou recebeu mensagem ou
+                 * teve alguma desconexão
+                 */
+                if (FD_ISSET(sockfd, &novo_set)) {
+                    if ( recv(sockfd, (void*) buf, MAX_LINE, 0) ) {
+                        printf("Message received\n");
+                        printf("Port: %d", ntohs(client_helper.sin_port));
+                        printf("  From: %s\n", inet_ntoa(client_helper.sin_addr));
+                        printf("Message:\n %s\n", buf);
+
+                        /* Envia resposta */
+                        send(sockfd, (const void*) buf, strlen(buf) + 1, 0);
+                    } else {
+                        printf("Disconected %s on Port %d \n" ,
+                                inet_ntoa(client_helper.sin_addr) ,
+                                ntohs(client_helper.sin_port)
+                                );
+                        close(sockfd);
+                        FD_CLR(sockfd, &todos_fds);
+                        clientes[i] = -1;
                     }
+                    if (--nready <= 0)
+                        break;				// nÃ£o existem mais descritores para serem lidos
                 }
-                if (--nready <= 0)
-                    break;				// nÃ£o existem mais descritores para serem lidos
             }
         }
     }
