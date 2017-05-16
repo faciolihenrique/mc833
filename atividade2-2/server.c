@@ -120,13 +120,13 @@ int main(int argc, char * argv[])
              		return -6;
             }
 
-            FD_SET(newsoc, &todos_fds);		// adiciona novo descritor ao conjunto
+            FD_SET(newsoc, &todos_fds);		// Adiciona novo descritor ao conjunto
             if (newsoc > maxfd)
                 maxfd = newsoc;			    // para o select
             if (i > cliente_num)
-                cliente_num = i;	       	// Ã­ndice mÃ¡ximo no vetor clientes[]
+                cliente_num = i;	       	// Indice máximo no vetor clientes[]
             if (--nready <= 0)
-                continue;		         	// nÃ£o existem mais descritores para serem lidos
+                continue;		         	// Não existem mais descritores para serem lidos
         }
 
         /* Verifica se há novas entradas nos socketes dos clientes */
@@ -138,7 +138,7 @@ int main(int argc, char * argv[])
                 len = sizeof(client_helper);
                 getpeername(sockfd, (struct sockaddr *) &client_helper, &len);
 
-                /* Se há modificação no socket - entao ou recebeu mensagem ou
+                /* Se há modificação no socket - então ou recebeu mensagem ou
                  * teve alguma desconexão
                  */
                 if (FD_ISSET(sockfd, &novo_set)) {
@@ -160,7 +160,7 @@ int main(int argc, char * argv[])
                         clientes[i] = -1;
                     }
                     if (--nready <= 0)
-                        break;				// nÃ£o existem mais descritores para serem lidos
+                        break;				// Não existem mais descritores para serem lidos
                 }
             }
         }
