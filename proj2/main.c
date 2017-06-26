@@ -1,0 +1,25 @@
+/* 2017
+ * Projeto 2 - mc833 - Laboratório de Redes
+ * main.c
+ *
+ * Henrique Noronha Facioli
+ * Thiago Silva de Farias
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#include "main.h"
+#include "servidor.h"
+#include "simulacao.h"
+
+int main() {
+    create_router();    // Inicializa o roteador (criando um servidor de media, security, confort)
+    create_car();       // Inicializa alguns carros
+    while(1){
+        sleep(1);
+        simulate();
+    }
+    return 0;
+}
