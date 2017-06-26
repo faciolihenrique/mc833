@@ -15,9 +15,9 @@
 
 unsigned long int time = 0;
 
-void simulate() {
+void simulate(Vehicle vehicles[], int n) {
     ++time;
-    update_cars();
+    update_cars(vehicles, n);
 }
 
 Vehicle create_vehicle(CarType type, Speed car_speed, Direction dir) {
@@ -66,15 +66,21 @@ void update_car_movement(Vehicle v) {
     switch (v.dir) {
         case North:
             v.pos.y -= v.car_speed;
+            break;
         case West:
             v.pos.x -= v.car_speed;
+            break;
         case South:
             v.pos.y += v.car_speed;
+            break;
         case East:
             v.pos.x += v.car_speed;
-        default:
             break;
     }
+}
+
+void change_car_speed(Vehicle v, int acceleration) {
+    v.car_speed += acceleration;
 }
 
 void send_package() {
