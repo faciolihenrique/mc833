@@ -1,3 +1,6 @@
+#ifndef MAIN_H
+#define MAIN_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -37,8 +40,8 @@
 #define Speed int
 
 /*~~~~~~ Data Structures ~~~~~~~*/
-typedef enum car_type {Car, Truck, DoubleTruck} CarType;
-typedef enum direction {North, West, South, East} Direction;
+typedef enum {Car, Truck, DoubleTruck} CarType;
+typedef enum {North, West, South, East} Direction;
 
 /* Position struct */
 typedef struct {
@@ -72,3 +75,5 @@ struct ListaAdj {
 };
 
 int map[SIZE_MAP][SIZE_MAP];
+
+#endif
