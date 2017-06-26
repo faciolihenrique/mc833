@@ -4,7 +4,7 @@
 CC = gcc
 CFLAGS = -Wall -std=c11
 
-TARGET = simulation
+TARGET = simulation.out
 INC_DIR := -I.
 
 SRCS := main.c servidor.c simulacao.c
