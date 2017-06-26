@@ -1,0 +1,10 @@
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
+
+#define SIZE_MAP 18
+#define MAX_SPEED 3
+#define N_CONNECTIONS 20
+#define PACKAGE_INTERVAL 25
+#define SPEED_INTERVAL 25
+
+#endif

@@ -22,7 +22,6 @@ void simulate(Vehicle vehicles[], int n) {
 
 Vehicle create_vehicle(CarType type, Speed car_speed, Direction dir) {
     Vehicle v;
-    int speed;
 
     // CarType.
     v.type = type;
@@ -35,9 +34,8 @@ Vehicle create_vehicle(CarType type, Speed car_speed, Direction dir) {
         v.length = SIZE_DOUBLETRUCK;
     }
     // Speed.
-    speed = SPEED_MULTIPLIER * car_speed;
-    if (speed >= 1 && speed <= SPEED_MULTIPLIER * MAX_SPEED) {
-        v.car_speed = speed;
+    if (car_speed >= 1 && car_speed <= MAX_SPEED) {
+        v.car_speed = car_speed;
     }
     // Direction.
     v.dir = dir;
