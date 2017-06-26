@@ -2,8 +2,8 @@
  * Projeto 2 - mc833 - Laboratório de Redes
  * main.c
  *
- * Henrique Noronha Facioli
- * Thiago Silva de Farias
+ * Henrique Noronha Facioli - 157986
+ * Thiago Silva de Farias - 148077
  */
 
 void create_router() {

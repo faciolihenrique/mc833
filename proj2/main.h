@@ -6,6 +6,7 @@
 #define SIZE_TRUCK
 #define SIZE_DOUBLETRUCK
 #define MAX_SPEED 3
+#define SPEED_MULTIPLIER 1
 
 /* "Define" a type just to make it more readable */
 #define Speed int
@@ -39,3 +40,12 @@ typedef struct {
 
 
 int map[SIZE_MAP][SIZE_MAP];
+
+struct No {
+    Vehicle* v;
+    struct No* prox;
+};
+
+struct ListaAdj {
+    struct No *cabeca;
+};

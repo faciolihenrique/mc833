@@ -2,8 +2,8 @@
  * Projeto 2 - mc833 - Laboratório de Redes
  * main.c
  *
- * Henrique Noronha Facioli
- * Thiago Silva de Farias
+ * Henrique Noronha Facioli - 157986
+ * Thiago Silva de Farias - 148077
  */
 
 #include <stdio.h>
@@ -20,8 +20,9 @@ void simulate() {
     update_cars();
 }
 
-Vehicle create_vehicle(Vehicle vehicles[], CarType type, Speed car_speed, Direction dir) {
+Vehicle create_vehicle(CarType type, Speed car_speed, Direction dir) {
     Vehicle v;
+    int speed;
 
     // CarType.
     v.type = type;
@@ -34,8 +35,9 @@ Vehicle create_vehicle(Vehicle vehicles[], CarType type, Speed car_speed, Direct
         v.length = 3;
     }
     // Speed.
-    if (car_speed >= 1 && car_speed <= MAX_SPEED) {
-        v.car_speed = car_speed;
+    speed = SPEED_MULTIPLIER * car_speed;
+    if (speed >= 1 && speed <= MAX_SPEED) {
+        v.car_speed = speed;
     }
     // Direction.
     v.dir = dir;
@@ -53,7 +55,6 @@ Vehicle create_vehicle(Vehicle vehicles[], CarType type, Speed car_speed, Direct
         v.pos.x = SIZE_MAP/2;
         v.pos.y = v.length;
     }
-
     return v;
 }
 
