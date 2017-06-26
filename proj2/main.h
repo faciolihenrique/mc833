@@ -1,10 +1,12 @@
-#define SIZE_MAP 80
+#define SIZE_MAP 18
 #define PKG_ENTERTAINEMENT_SIZE
 #define PKG_SECURITY_SIZE
 #define PKG_CONFORT_SIZE
 #define SIZE_CAR 4
 #define SIZE_TRUCK
 #define SIZE_DOUBLETRUCK
+#define MAX_SPEED 3
+#define SPEED_MULTIPLIER 1
 
 /* "Define" a type just to make it more readable */
 #define Speed int
@@ -23,7 +25,7 @@ typedef struct {
 /* Vehicle */
 typedef struct {
     CarType type;
-    int w_size;
+    int length;
     Speed car_speed;
     Direction dir;
     Position pos;
@@ -38,3 +40,12 @@ typedef struct {
 
 
 int map[SIZE_MAP][SIZE_MAP];
+
+struct No {
+    Vehicle* v;
+    struct No* prox;
+};
+
+struct ListaAdj {
+    struct No *cabeca;
+};
