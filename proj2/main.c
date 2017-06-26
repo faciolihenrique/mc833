@@ -11,7 +11,8 @@
 #include "simulacao.h"
 
 int main() {
-    create_router();    // Inicializa o roteador (criando um servidor de media, security, confort)
+    create_router();    //  Inicializa o roteador (criando um servidor de security, media, confort)
+    printf("\n");
     while(1){
         sleep(1);
         simulate();
