@@ -6,10 +6,6 @@
  * Thiago Silva de Farias - 148077
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
 #include "main.h"
 #include "servidor.h"
 #include "simulacao.h"

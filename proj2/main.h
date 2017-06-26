@@ -1,18 +1,42 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <unistd.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+/* Definitions */
 #define SIZE_MAP 18
-#define PKG_ENTERTAINEMENT_SIZE
-#define PKG_SECURITY_SIZE
-#define PKG_CONFORT_SIZE
-#define SIZE_CAR 4
-#define SIZE_TRUCK
-#define SIZE_DOUBLETRUCK
+
+/* Simulation */
+#define SIZE_CAR 1
+#define SIZE_TRUCK 2
+#define SIZE_DOUBLETRUCK 3
 #define MAX_SPEED 3
+
 #define SPEED_MULTIPLIER 1
+
+/* Conections definitons */
+#define N_CONNECTIONS 20
+#define ENT_PORT 42000
+#define SEC_PORT 43000
+#define CON_PORT 44000
+
+#define PKG_ENT_SIZE
+#define PKG_SEC_SIZE
+#define PKG_CON_SIZE
+
+#define MAX_PENDING 5
+#define MAX_LINE 2048
+
 
 /* "Define" a type just to make it more readable */
 #define Speed int
 
 /*~~~~~~ Data Structures ~~~~~~~*/
-
 typedef enum car_type {Car, Truck, DoubleTruck} CarType;
 typedef enum direction {North, West, South, East} Direction;
 
@@ -38,9 +62,6 @@ typedef struct {
     Speed car_speed;
 } Package;
 
-
-int map[SIZE_MAP][SIZE_MAP];
-
 struct No {
     Vehicle* v;
     struct No* prox;
@@ -49,3 +70,5 @@ struct No {
 struct ListaAdj {
     struct No *cabeca;
 };
+
+int map[SIZE_MAP][SIZE_MAP];

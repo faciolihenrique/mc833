@@ -6,6 +6,6 @@
  * security 10100
  */
 void create_router();
-void create_media_server();
-void create_security_server();
-void create_confort_server();
+int create_security_server();
+int create_media_server();
+int create_confort_server();
