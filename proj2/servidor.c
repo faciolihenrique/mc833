@@ -1,4 +1,4 @@
-N_CONNECTIONS/* 2017
+/* 2017
  * Projeto 2 - mc833 - Laboratório de Redes
  * main.c
  *
