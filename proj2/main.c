@@ -12,7 +12,6 @@
 
 int main() {
     create_router();    // Inicializa o roteador (criando um servidor de media, security, confort)
-    create_car();       // Inicializa alguns carros
     while(1){
         sleep(1);
         simulate();

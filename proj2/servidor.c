@@ -26,7 +26,8 @@ void create_router() {
 }
 
 int create_media_server() {
-
+    while(1);
+    return 1;
 }
 
 int create_security_server() {
@@ -175,5 +176,6 @@ int create_security_server() {
 }
 
 int create_confort_server() {
-
+    while(1);
+    return 1;
 }
