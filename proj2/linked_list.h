@@ -30,6 +30,4 @@ void addServerCarList(AdjList* List, ServerCar* v);
 /* Removes the vehicle v from the list */
 void removeServerCarList(AdjList* List, int ID);
 
-
-
 #endif
