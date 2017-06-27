@@ -20,10 +20,10 @@ extern unsigned long int time_running;
 
 void simulate(AdjList* CarList) {
     if(time_running == 0){
-        addVehicleList(CarList, create_vehicle(1, Car, 1, East));
-        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, North));
-        addVehicleList(CarList, create_vehicle(3, Truck, 1, South));
-        addVehicleList(CarList, create_vehicle(4, Truck, 3, West));
+        addVehicleList(CarList, create_vehicle(1, Car, 3, North));
+        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 2, East));
+        addVehicleList(CarList, create_vehicle(3, Truck, 3, South));
+        addVehicleList(CarList, create_vehicle(4, Truck, 1, West));
     }
 
     update_cars(CarList);
@@ -55,6 +55,8 @@ Vehicle* create_vehicle(int ID, CarType type, Speed car_speed, Direction dir) {
     // Speed.
     if (car_speed >= 1 && car_speed <= MAX_SPEED) {
         v->car_speed = car_speed;
+    } else {
+        v->car_speed = MAX_SPEED;
     }
     // Direction.
     v->dir = dir;
@@ -82,19 +84,22 @@ Vehicle* create_vehicle(int ID, CarType type, Speed car_speed, Direction dir) {
 
 void update_cars(AdjList* List) {
     No *proxNo, *atual;
+    char flag;
 
     atual = List->cabeca;
     while(atual != NULL) {
         if (timeToMove((Vehicle*) atual->v)) {
+            flag = 0;
             update_car_movement((Vehicle*) atual->v);
             if(    (((Vehicle*) atual->v)->pos.y) < 0
                 || (((Vehicle*) atual->v)->pos.y) >= SIZE_MAP
                 || (((Vehicle*) atual->v)->pos.x) < 0
                 || (((Vehicle*) atual->v)->pos.x) >= SIZE_MAP) {
                 removeVehicleList(List,  ((Vehicle *) atual->v)->ID);
+                flag = 1;
             }
         }
-        if (timeToSendPackage((Vehicle*) atual->v)) {
+        if (flag == 0 && timeToSendPackage((Vehicle*) atual->v)) {
             //dealSecToServer((Vehicle*) atual->v);
         }
         proxNo = atual->prox;
