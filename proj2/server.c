@@ -195,7 +195,7 @@ int create_entertainment_server() {
     fd_set todos_fds, novo_set;
 
     port = ENT_PORT;
-    printf("Starting entertainment Server on %d\n", port);
+    printf("Starting Entertainment Server on %d\n", port);
 
     /* Create a socket and check if its Ok
      * returns -1 if occurred an error
