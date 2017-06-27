@@ -7,15 +7,15 @@
  */
 
 #include "main.h"
-#include "servidor.h"
-#include "simulacao.h"
+#include "server.h"
+#include "simulation.h"
 
 int main() {
     create_router();    //  Inicializa o roteador (criando um servidor de security, media, confort)
     printf("\n");
     while(1){
         sleep(1);
-        simulate();
+        //simulate();
     }
     return 0;
 }

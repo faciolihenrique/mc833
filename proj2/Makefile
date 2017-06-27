@@ -7,7 +7,7 @@ CFLAGS = -Wall -std=c11
 TARGET = simulation.out
 INC_DIR := -I.
 
-SRCS := main.c servidor.c simulacao.c
+SRCS := main.c server.c simulation.c linked_list.c
 OBJS := $(SRCS:.c=.o)
 
 #------------------------------------------------------

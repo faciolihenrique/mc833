@@ -63,15 +63,4 @@ typedef struct {
     Speed car_speed;
 } Package;
 
-struct No {
-    Vehicle* v;
-    struct No* prox;
-};
-
-struct ListaAdj {
-    struct No *cabeca;
-};
-
-int map[SIZE_MAP][SIZE_MAP];
-
 #endif
