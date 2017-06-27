@@ -36,14 +36,13 @@ int create_entertainment_server();
  */
 int create_confort_server();
 
-Action dealWithPackage();
+Action dealWithPackage(AdjList* List, SecPackageToServer* package);
 
 ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Direction dir, Speed car_speed, Timestamp time_rec);
 
-void detectColision(AdjList List, ServerCar car);
+Action discoverAction(AdjList* List, ServerCar* car);
 
-int newSpeed(ServerCar car1, ServerCar car2);
+int thereIsColision(ServerCar* car1, ServerCar* car2);
 
-int inList(AdjList List, int ID);
 
 #endif

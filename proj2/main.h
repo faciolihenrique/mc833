@@ -40,7 +40,7 @@
 
 /* "Define" a type just to make it more readable */
 #define Speed int
-#define Timestamp int
+#define Timestamp unsigned long int
 
 /*~~~~~~ Data Structures ~~~~~~~*/
 typedef enum {Car, Truck, DoubleTruck} CarType;
@@ -74,6 +74,7 @@ typedef struct {
     Speed car_speed;
     Timestamp time_rec;
     Timestamp estimated_time_in;
+    Timestamp estimated_time_middle;
     Timestamp estimated_time_out;
     Timestamp destroy;
 } ServerCar;

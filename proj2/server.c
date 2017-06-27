@@ -479,7 +479,10 @@ int create_confort_server() {
     return 0;
 }
 
-Action dealWithPackage(AdjList List, SecPackageToServer* package) {
+Action dealWithPackage(AdjList* List, SecPackageToServer* package) {
+    /*if(isInServerCarList(List, package->ID)) {
+
+    }*/
     return 0;
 }
 
@@ -494,17 +497,97 @@ ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Di
     s->car_speed = car_speed;
     s->time_rec = time_rec;
     s->estimated_time_in = 0;
+    s->estimated_time_middle = 0;
     s->estimated_time_out = 0;
     s->destroy = 0;
 
     return s;
 }
 
-void detectColision(AdjList List, ServerCar car) {
+Action discoverAction(AdjList* List, ServerCar* car) {
+    No *atual = List->cabeca;
+    int original_speed = car->car_speed;
+    int increase_decrease = 0;
+    int cont = 1;
 
+    while(atual != NULL) {
+        if(thereIsColision(car, (ServerCar*) atual->v) && increase_decrease == 0) {
+            cont = 0;
+            if(car->car_speed == MAX_SPEED){
+                increase_decrease = 1;
+                car->car_speed = original_speed;
+            }
+            else {
+                car->car_speed++;
+            }
+            atual = List->cabeca;
+        }
+        if(thereIsColision(car, (ServerCar*) atual->v) && increase_decrease == 1) {
+            cont = 0;
+            if(car->car_speed == 1){
+                return Ambulance;
+            }
+            else {
+                car->car_speed--;
+            }
+            atual = List->cabeca;
+        }
+        atual = atual->prox;
+    }
+    if(cont) {
+        return Continue;
+    }
+    else {
+        if(increase_decrease) {
+            return Decrease;
+        }
+        else {
+            return Increase;
+        }
+    }
 }
 
-int newSpeed(ServerCar car1, ServerCar car2) {
+int thereIsColision(ServerCar* car1, ServerCar* car2) {
+    if((car1->dir == North || car1->dir == South) && (car2->dir == North || car2->dir == South)) {
+        return 0;
+    }
+    else if((car1->dir == East || car1->dir == West) && (car2->dir == East || car2->dir == West)) {
+        return 0;
+    }
+    else if(car1->dir == North && car2->dir == East) {
+        /* Car 1 enters and exits cross before Car 2 enters it */
+        if((car1->estimated_time_in < car2->estimated_time_middle) && (car1->estimated_time_middle < car2->estimated_time_middle)) {
+            return 0;
+        }
+        /* Car 2 enters and exits cross before Car 1 enters it */
+        else if((car2->estimated_time_middle > car1->estimated_time_in) && (car2->estimated_time_out > car1->estimated_time_in)) {
+            return 0;
+        }
+        else{
+            return 1;
+        }
+    }
+    else if(car1->dir == North && car2->dir == West) {
+
+    }
+    else if(car1->dir == South && car2->dir == East) {
+
+    }
+    else if(car1->dir == South && car2->dir == West) {
+
+    }
+    else if(car1->dir == West && car2->dir == North) {
+
+    }
+    else if(car1->dir == West && car2->dir == South) {
+
+    }
+    else if(car1->dir == East && car2->dir == North) {
+
+    }
+    else if(car1->dir == East && car2->dir == South) {
+
+    }
     return 0;
 }
 

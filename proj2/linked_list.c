@@ -20,6 +20,7 @@ int isEmpty(AdjList* List) {
 }
 
 ///////////////////////////////////Vehicles/////////////////////////////////////
+
 void addVehicleList(AdjList* List, Vehicle* v) {
     No *novo = (No *) malloc(sizeof(No));
 
@@ -135,6 +136,8 @@ void removeServerCarList(AdjList* List, int ID) {
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 int isInServerCarList(AdjList* List, int ID) {
     if(!isEmpty(List)){
