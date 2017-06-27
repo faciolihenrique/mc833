@@ -30,9 +30,9 @@
 #define SEC_PORT 43000
 #define CON_PORT 44000
 
-#define PKG_ENT_SIZE
-#define PKG_SEC_SIZE
-#define PKG_CON_SIZE
+#define PKG_ENT_SIZE 1000
+#define PKG_SEC_SIZE 30
+#define PKG_CON_SIZE 1000
 
 #define MAX_PENDING 5
 #define MAX_LINE 2048
@@ -45,6 +45,8 @@
 /*~~~~~~ Data Structures ~~~~~~~*/
 typedef enum {Car, Truck, DoubleTruck} CarType;
 typedef enum {North, West, South, East} Direction;
+typedef enum {Confort, Entertainment, Security} ConectionType;
+typedef enum {None, Continue, Increase, Decrease, Ambulance} Action;
 
 /* Position struct */
 typedef struct {
@@ -60,7 +62,19 @@ typedef struct {
     Speed car_speed;
     Direction dir;
     Position pos;
+    Timestamp entry_time;
 } Vehicle;
+
+typedef struct {
+    int ID;
+    Position pos;
+    Direction dir;
+    Speed car_speed;
+    Timestamp time_rec;
+    Timestamp estimated_time_in;
+    Timestamp estimated_time_out;
+    Timestamp destroy;
+} ServerCar;
 
 /* Package struct */
 typedef struct {
@@ -69,6 +83,12 @@ typedef struct {
     Direction dir;
     Speed car_speed;
     Timestamp time_sent;
-} Package;
+} SecPackageToServer;
+
+typedef struct {
+    int ID;
+    Speed car_speed;
+    Action ac;
+} SecPackageToClient;
 
 #endif

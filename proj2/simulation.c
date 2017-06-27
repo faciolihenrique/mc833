@@ -14,11 +14,9 @@
 #include "linked_list.h"
 #include "printing.h"
 
-
-unsigned long int time_running = 0;
-
-
 char CrossMap[SIZE_MAP][SIZE_MAP];
+
+extern unsigned long int time_running;
 
 void simulate(AdjList* CarList) {
     if(time_running == 0){
@@ -45,7 +43,7 @@ void simulate(AdjList* CarList) {
 ////////////////////////////////////////////////////////////////////////////////
 
 Vehicle* create_vehicle(int ID, CarType type, Speed car_speed, Direction dir) {
-    Vehicle* v = malloc(sizeof(Vehicle));
+    Vehicle* v = calloc(1,sizeof(Vehicle));
 
     // ID.
     v->ID = ID;
@@ -79,6 +77,9 @@ Vehicle* create_vehicle(int ID, CarType type, Speed car_speed, Direction dir) {
         v->pos.y = SIZE_MAP/2;
         v->pos.x = v->length - 1;
     }
+
+    v->entry_time = time_running;
+
     return v;
 }
 
@@ -189,6 +190,129 @@ void insert_v_in_map(Vehicle* v, char map[SIZE_MAP][SIZE_MAP]) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void send_package(Vehicle v) {
+void dealSecToServer(Vehicle* v) {
+    SecPackageToClient* package = connectToServer(v, Security);
 
+    if (package->ac == Increase) {
+        change_car_speed(v, package->car_speed);
+    } else if (package->ac == Decrease) {
+        change_car_speed(v, -package->car_speed);
+    } else if (package->ac == Ambulance) {
+
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void connectEntToServer(Vehicle* v) {
+
+}
+////////////////////////////////////////////////////////////////////////////////
+
+void connectConToServer(Vehicle* v) {
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void* connectToServer(Vehicle* v, ConectionType contype) {
+#ifdef UDP
+
+#else
+    struct hostent* host_address = NULL;
+    struct sockaddr_in socket_address, socket_local;
+    char* msg = calloc(PKG_ENT_SIZE, sizeof(char));
+    int s, port, c;
+
+
+    if (contype == Security) {
+        port = SEC_PORT;
+        host_address = gethostbyname(SEC_ADDRESS);
+    } else if (contype == Entertainment) {
+        port = ENT_PORT;
+        host_address = gethostbyname(ENT_ADDRESS);
+    } else if (contype == Confort) {
+        port = CON_PORT;
+        host_address = gethostbyname(CON_ADDRESS);
+    }
+
+    /* Translate the host name to IP*/
+    if (host_address == NULL){
+        printf("Error on gethostbyname\n");
+        return NULL;
+    }
+
+    /* Create a socket and check if its Ok
+     * returns -1 if occurred an error
+     * AF_INET = IPv4
+     * SOCK_STREAM = TCP
+     * 0 = Default
+     */
+    s = socket(AF_INET, SOCK_STREAM, 0);
+    if ( s < 0 ) {
+        printf("Problem occurred when creating a socket\n");
+        return NULL;
+    }
+
+    /* Allocate the socket  and fills with the necessary info */
+    bzero((char *)&socket_address, sizeof(socket_address));
+    //socket_address = (struct sockaddr_in*) calloc(1, sizeof(struct sockaddr_in*));
+    socket_address.sin_family = AF_INET;
+    socket_address.sin_port = htons(port);
+    socket_address.sin_addr = *(struct in_addr*) host_address->h_addr_list[0];
+
+    /* criação de socket ativo*/
+    c = connect(s,(struct sockaddr*) &socket_address, sizeof(struct sockaddr_in));
+    if (c < 0) {
+        printf("Problem occurred when connecting\n");
+        return NULL;
+    } else {
+        // Conectou ao servidor
+        unsigned int len = sizeof(socket_local);
+        int i = getsockname(s, (struct sockaddr *) &socket_local, &len);
+
+        if (i < 0){
+            printf("Failed to obtaing information of the socket created\n");
+        }
+    }
+
+    if (contype == Security) {
+        SecPackageToServer* pkg = calloc(1, sizeof(SecPackageToServer));
+
+        pkg->car_speed = v->car_speed;
+        pkg->dir       = v->dir;
+        pkg->ID        = v->ID;
+        pkg->pos       = v->pos;
+        pkg->time_sent = time_running;
+
+        if (send(s, (const void*) pkg, sizeof(pkg), 0) < 0) {
+            printf("Problem sending message\n");
+            return NULL;
+        }
+
+    } else if (contype == Entertainment) {
+        char pkg[PKG_ENT_SIZE] = "\0";
+
+        if (send(s, (const void*) pkg, PKG_ENT_SIZE, 0) < 0) {
+            printf("Problem sending message\n");
+            return NULL;
+        }
+
+    } else if (contype == Confort) {
+        char pkg[PKG_CON_SIZE] = "\0";
+
+        if (send(s, (const void*) pkg, PKG_ENT_SIZE, 0) < 0) {
+            printf("Problem sending message\n");
+            return NULL;
+        }
+    }
+
+    if (recv(s, (void *) msg, MAX_LINE, 0) < 0) {
+        printf("Could not receive any response\n");
+        return NULL;
+    }
+
+    return msg;
+#endif
+    return 0;
 }
