@@ -10,6 +10,8 @@
 
 int row, col;
 
+////////////////////////////////////////////////////////////////////////////////
+
 void printMap(char map[SIZE_MAP][SIZE_MAP]) {
     int i, j, l, m;
 
@@ -22,3 +24,5 @@ void printMap(char map[SIZE_MAP][SIZE_MAP]) {
     }
     refresh();			        /* Print it on to the real screen */
 }
+
+////////////////////////////////////////////////////////////////////////////////

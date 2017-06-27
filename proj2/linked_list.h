@@ -5,7 +5,7 @@
 
 /* Node struct */
 typedef struct No {
-    Vehicle v;
+    void  *v;
     struct No* prox;
 } No;
 
@@ -18,13 +18,13 @@ typedef struct {
 int map[SIZE_MAP][SIZE_MAP];
 
 /* Add an element to the list */
-void addElement(AdjList* List, Vehicle v);
+void addVehicleList(AdjList* List, Vehicle* v);
 
 /* Checks if the list is empty */
 int isEmpty(AdjList* List);
 
 /* Removes the vehicle v from the list */
-void removeElement(AdjList* List, Vehicle v);
+void removeVehicleList(AdjList* List, int ID);
 
 /* Frees the memory used by the list */
 void free_list(AdjList* List);

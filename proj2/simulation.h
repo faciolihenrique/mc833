@@ -8,7 +8,7 @@
 void simulate(AdjList* CarList);
 
 /* Create a new vehicle */
-Vehicle create_vehicle(int ID, CarType type, Speed car_speed, Direction dir);
+Vehicle* create_vehicle(int ID, CarType type, Speed car_speed, Direction dir);
 
 /* Update the positions of all cars */
 void update_cars(AdjList* List);
@@ -26,6 +26,6 @@ void send_package(Vehicle v);
 void update_map(AdjList* List, char matrix[SIZE_MAP][SIZE_MAP]);
 
 /* Insert the vehicle v car on the map */
-void insert_v_in_map(Vehicle v, char map[SIZE_MAP][SIZE_MAP]);
+void insert_v_in_map(Vehicle* v, char map[SIZE_MAP][SIZE_MAP]);
 
 #endif

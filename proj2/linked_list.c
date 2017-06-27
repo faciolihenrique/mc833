@@ -8,7 +8,20 @@
 
 #include "linked_list.h"
 
-void addElement(AdjList* List, Vehicle v) {
+
+////////////////////////////////////////////////////////////////////////////////
+
+int isEmpty(AdjList* List) {
+    if(List->cabeca == NULL) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void addVehicleList(AdjList* List, Vehicle* v) {
     No *novo = (No *) malloc(sizeof(No));
 
     if(!novo){
@@ -17,7 +30,7 @@ void addElement(AdjList* List, Vehicle v) {
     }
 
     /* Creates the node */
-    novo->v = v;
+    novo->v = (void*) v;
     novo->prox = NULL;
 
     if( isEmpty(List) ) {
@@ -32,26 +45,22 @@ void addElement(AdjList* List, Vehicle v) {
     }
 }
 
-int isEmpty(AdjList* List) {
-    if(List->cabeca == NULL) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
+////////////////////////////////////////////////////////////////////////////////
 
-void removeElement(AdjList* List, Vehicle v) {
+void removeVehicleList(AdjList* List, int ID) {
     if(!isEmpty(List)){
         No *anterior = NULL;
         No *atual = List->cabeca;
         while (atual != NULL) {
-            if (atual->v.ID == v.ID) {
+            if (((Vehicle *) atual->v)->ID == ID) {
                 if(atual == List->cabeca) {
                     List->cabeca = atual->prox;
+                    free(atual->v);
                     free(atual);
                 }
                 else {
                     anterior->prox = atual->prox;
+                    free(atual->v);
                     free(atual);
                 }
                 return;
@@ -62,6 +71,8 @@ void removeElement(AdjList* List, Vehicle v) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 void free_list(AdjList* List) {
     if(!isEmpty(List)){
         No *proxNo, *atual;
@@ -69,8 +80,11 @@ void free_list(AdjList* List) {
         atual = List->cabeca;
         while(atual != NULL){
             proxNo = atual->prox;
+            free(atual->v);
             free(atual);
             atual = proxNo;
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
