@@ -1,6 +1,6 @@
 /* 2017
  * Projeto 2 - mc833 - Laboratório de Redes
- * main.c
+ * simulation.c
  *
  * Henrique Noronha Facioli - 157986
  * Thiago Silva de Farias - 148077
@@ -15,14 +15,16 @@
 
 unsigned long int time = 0;
 
-void simulate(Vehicle vehicles[], int n) {
+void simulate(AdjList* List, int n) {
     ++time;
-    update_cars(vehicles, n);
+    update_cars(List);
 }
 
-Vehicle create_vehicle(CarType type, Speed car_speed, Direction dir) {
+Vehicle create_vehicle(int ID, CarType type, Speed car_speed, Direction dir) {
     Vehicle v;
 
+    // ID.
+    v.ID = ID;
     // CarType.
     v.type = type;
     // Length according to Type.
@@ -56,8 +58,15 @@ Vehicle create_vehicle(CarType type, Speed car_speed, Direction dir) {
     return v;
 }
 
-void update_cars(Vehicle vehicles[], int n) {
+void update_cars(AdjList* List) {
+    No *proxNo, *atual;
 
+    atual = List->cabeca;
+    while(atual != NULL) {
+        proxNo = atual->prox;
+        update_car_movement(atual->v);
+        atual = proxNo;
+    }
 }
 
 void update_car_movement(Vehicle v) {

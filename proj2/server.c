@@ -1,6 +1,6 @@
 /* 2017
  * Projeto 2 - mc833 - Laboratório de Redes
- * main.c
+ * server.c
  *
  * Henrique Noronha Facioli - 157986
  * Thiago Silva de Farias - 148077
@@ -15,7 +15,7 @@ void create_router() {
             create_security_server();
         } else {
             if (fork()) {
-                create_media_server();
+                create_entertainment_server();
             } else {
                 if (fork()) {
                     create_confort_server();
@@ -30,7 +30,7 @@ void create_router() {
 int create_security_server() {
     return 1;
 }
-int create_media_server() {
+int create_entertainment_server() {
     return 1;
 }
 int create_confort_server() {
@@ -185,7 +185,7 @@ int create_security_server() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-int create_media_server() {
+int create_entertainment_server() {
     struct sockaddr_in socket_address, client_helper;
     char buf[MAX_LINE];
     unsigned int len;

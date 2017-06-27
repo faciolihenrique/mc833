@@ -3,23 +3,31 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
+
+/* Node struct */
 typedef struct No {
     Vehicle v;
     struct No* prox;
 } No;
 
+/* Adjacency List struct */
 typedef struct {
     No* cabeca;
-} ListaAdj;
+} AdjList;
 
+/* Map */
 int map[SIZE_MAP][SIZE_MAP];
 
-void addElement(ListaAdj* List, Vehicle v);
+/* Add an element to the list */
+void addElement(AdjList* List, Vehicle v);
 
-int isEmpty(ListaAdj* List);
+/* Checks if the list is empty */
+int isEmpty(AdjList* List);
 
-void removeElent(ListaAdj* List, Vehicle v);
+/* Removes the vehicle v from the list */
+void removeElement(AdjList* List, Vehicle v);
 
-void free_list(ListaAdj* List);
+/* Frees the memory used by the list */
+void free_list(AdjList* List);
 
 #endif

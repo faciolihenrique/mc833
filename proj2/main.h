@@ -14,6 +14,7 @@
 #include <arpa/inet.h>
 
 #include "definitions.h"
+#include "linked_list.h"
 
 /* Simulation */
 #define SIZE_CAR 1
@@ -47,8 +48,9 @@ typedef struct {
     int y;
 } Position;
 
-/* Vehicle */
+/* Vehicle struct */
 typedef struct {
+    int ID;
     CarType type;
     int length;
     Speed car_speed;
@@ -56,7 +58,7 @@ typedef struct {
     Position pos;
 } Vehicle;
 
-/* Package sent */
+/* Package struct */
 typedef struct {
     Position pos;
     Direction dir;
