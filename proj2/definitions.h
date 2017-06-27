@@ -14,6 +14,6 @@
 #define MAX_SPEED 3                 // Streets max speed
 #define N_CONNECTIONS 20            // How many cars can talk to the router
 #define PACKAGE_INTERVAL 25         // Time to send the packages (in ms)
-#define SPEED_INTERVAL 25           // Block_walking = Speed/SPEED_INTERVAL(in ms)
+#define SPEED_INTERVAL 10           // Block_walking = Speed/SPEED_INTERVAL(in ms)
 
 #endif

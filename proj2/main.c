@@ -17,8 +17,8 @@
 
 int main() {
     struct timespec ts;
-    ts.tv_sec = 1000 / 1000;
-    ts.tv_nsec = (1000 % 1000) * 1000000;
+    ts.tv_sec = 100 / 1000;
+    ts.tv_nsec = (100 % 1000) * 1000000;
 
     initscr();			        /* Start curses mode 		  */
 
