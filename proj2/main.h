@@ -82,6 +82,8 @@ typedef struct {
 /* Package struct */
 typedef struct {
     int ID;
+    CarType type;
+    int length;
     Position pos;
     Direction dir;
     Speed car_speed;
