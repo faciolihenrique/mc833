@@ -33,7 +33,7 @@ void simulate(AdjList* CarList) {
 
 
     /* If the time mod SPEED_INTERVAL is 0, then its time to the cars to walk */
-    if (time_running % SPEED_INTERVAL) {
+    if ((time_running % SPEED_INTERVAL) == 0) {
         update_cars(CarList);
         update_map(CarList,CrossMap);
         printMap(CrossMap);

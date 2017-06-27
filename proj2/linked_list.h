@@ -14,19 +14,22 @@ typedef struct {
     struct No* cabeca;
 } AdjList;
 
-/* Map */
-int map[SIZE_MAP][SIZE_MAP];
+/* Checks if the list is empty */
+int isEmpty(AdjList* List);
+/* Frees the memory used by the list */
+void free_list(AdjList* List);
+
 
 /* Add an element to the list */
 void addVehicleList(AdjList* List, Vehicle* v);
-
-/* Checks if the list is empty */
-int isEmpty(AdjList* List);
-
 /* Removes the vehicle v from the list */
 void removeVehicleList(AdjList* List, int ID);
 
-/* Frees the memory used by the list */
-void free_list(AdjList* List);
+/* Add an element to the list */
+void addPackageList(AdjList* List, Package* v);
+/* Removes the vehicle v from the list */
+void removePackageList(AdjList* List, int ID);
+
+
 
 #endif

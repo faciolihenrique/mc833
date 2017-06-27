@@ -1,6 +1,19 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include "main.h"
+
+typedef struct {
+    int ID;
+    Position pos;
+    Direction dir;
+    Speed car_speed;
+    Timestamp time_rec;
+    Timestamp estimated_time_in;
+    Timestamp estimated_time_out;
+    Timestamp destroy;
+} ServerCars;
+
 /*~~~~~~ Functions ~~~~~~~*/
 /* Creating the servers.
  * Each server creates a fork and starts a different server on different ports

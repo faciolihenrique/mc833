@@ -40,6 +40,7 @@
 
 /* "Define" a type just to make it more readable */
 #define Speed int
+#define Timestamp int
 
 /*~~~~~~ Data Structures ~~~~~~~*/
 typedef enum {Car, Truck, DoubleTruck} CarType;
@@ -63,9 +64,11 @@ typedef struct {
 
 /* Package struct */
 typedef struct {
+    int ID;
     Position pos;
     Direction dir;
     Speed car_speed;
+    Timestamp time_sent;
 } Package;
 
 #endif
