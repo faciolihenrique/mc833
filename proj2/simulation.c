@@ -22,10 +22,10 @@ char CrossMap[SIZE_MAP][SIZE_MAP];
 
 void simulate(AdjList* CarList) {
     if(time_running == 0){
-        addElement(CarList, create_vehicle(1, Car, 1, South));
+        addElement(CarList, create_vehicle(1, Car, 1, North));
         //change_car_speed(&CarList->cabeca->v, 2);
         addElement(CarList, create_vehicle(2, DoubleTruck, 1, East));
-        addElement(CarList, create_vehicle(3, Truck, 1, North));
+        addElement(CarList, create_vehicle(3, Truck, 1, South));
         addElement(CarList, create_vehicle(4, Truck, 1, West));
         update_map(CarList, CrossMap);
         printMap(CrossMap);
@@ -87,10 +87,10 @@ void update_cars(AdjList* List) {
     while(atual != NULL) {
         proxNo = atual->prox;
         update_car_movement(&atual->v);
-        if((atual->v.pos.y/* + (atual->v.length - 1)*/) < 0
-            || (atual->v.pos.y/* - (atual->v.length - 1)*/) >= SIZE_MAP
-            || (atual->v.pos.x/* + (atual->v.length - 1)*/) < 0
-            || (atual->v.pos.x/* - (atual->v.length - 1)*/) >= SIZE_MAP) {
+        if((atual->v.pos.y) < 0
+            || (atual->v.pos.y) >= SIZE_MAP
+            || (atual->v.pos.x) < 0
+            || (atual->v.pos.x) >= SIZE_MAP) {
             removeElement(List, atual->v);
         }
         atual = proxNo;
@@ -170,9 +170,9 @@ void insert_v_in_map(Vehicle v, char map[SIZE_MAP][SIZE_MAP]) {
             map[(v.pos).y][(v.pos).x+1] = 'd';
             map[(v.pos).y][(v.pos).x+2] = 'd';
         } else if (v.dir == South) {
-            map[(v.pos).y][(v.pos).x] = 't';
-            map[(v.pos).y-1][(v.pos).x] = 't';
-            map[(v.pos).y-2][(v.pos).x] = 't';
+            map[(v.pos).y][(v.pos).x] = 'd';
+            map[(v.pos).y-1][(v.pos).x] = 'd';
+            map[(v.pos).y-2][(v.pos).x] = 'd';
         } else if (v.dir == East) {
             map[(v.pos).y][(v.pos).x] = 'd';
             map[(v.pos).y][(v.pos).x-1] = 'd';

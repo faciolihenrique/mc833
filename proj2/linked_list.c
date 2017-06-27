@@ -42,13 +42,18 @@ int isEmpty(AdjList* List) {
 
 void removeElement(AdjList* List, Vehicle v) {
     if(!isEmpty(List)){
-        No *anterior = List->cabeca;
-        No *atual = anterior->prox;
-        while (anterior != NULL && atual != NULL) {
+        No *anterior = NULL;
+        No *atual = List->cabeca;
+        while (atual != NULL) {
             if (atual->v.ID == v.ID) {
-                No *temp = atual;
-                anterior->prox = atual->prox;
-                free(temp);
+                if(atual == List->cabeca) {
+                    List->cabeca = atual->prox;
+                    free(atual);
+                }
+                else {
+                    anterior->prox = atual->prox;
+                    free(atual);
+                }
                 return;
             }
         anterior = atual;
