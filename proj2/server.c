@@ -479,4 +479,33 @@ int create_confort_server() {
     return 0;
 }
 
+Action dealWithPackage(AdjList List, SecPackageToServer* package) {
+
+}
+
+ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Direction dir, Speed car_speed, Timestamp time_rec) {
+    ServerCar* s = calloc(1,sizeof(ServerCar));
+
+    s->ID = ID;
+    s->type = type;
+    s->length = length;
+    s->pos = pos;
+    s->dir = dir;
+    s->car_speed = car_speed;
+    s->time_rec = time_rec;
+    s->estimated_time_in = 0;
+    s->estimated_time_out = 0;
+    s->destroy = 0;
+
+    return s;
+}
+
+void detectColision(AdjList List, ServerCar car) {
+
+}
+
+int newSpeed(ServerCar car1, ServerCar car2) {
+
+}
+
 #endif

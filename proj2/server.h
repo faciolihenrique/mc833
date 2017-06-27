@@ -38,10 +38,12 @@ int create_confort_server();
 
 Action dealWithPackage();
 
-ServerCar* createNewServerCar(int ID, Position pos, Direction dir, Speed car_speed, Timestamp time_rec);
+ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Direction dir, Speed car_speed, Timestamp time_rec);
 
 void detectColision(AdjList List, ServerCar car);
 
 int newSpeed(ServerCar car1, ServerCar car2);
+
+int inList(AdjList List, int ID);
 
 #endif
