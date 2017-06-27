@@ -7,7 +7,7 @@ CFLAGS = -Wall -std=c11 -lncurses
 TARGET = simulation.out
 INC_DIR := -I.
 
-SRCS := main.c server.c simulation.c linked_list.c printing.c
+SRCS := main.c server.c simulation.c linked_list.c printing.c colisions.c
 OBJS := $(SRCS:.c=.o)
 
 #------------------------------------------------------
