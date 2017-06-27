@@ -19,8 +19,7 @@ int isEmpty(AdjList* List) {
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
+///////////////////////////////////Vehicles/////////////////////////////////////
 void addVehicleList(AdjList* List, Vehicle* v) {
     No *novo = (No *) malloc(sizeof(No));
 
@@ -33,10 +32,9 @@ void addVehicleList(AdjList* List, Vehicle* v) {
     novo->v = (void*) v;
     novo->prox = NULL;
 
-    if( isEmpty(List) ) {
+    if (isEmpty(List)) {
         List->cabeca = novo;
-    }
-    else{
+    } else {
         No *tmp = List->cabeca;
         while(tmp->prox != NULL) {
             tmp = tmp->prox;
@@ -53,20 +51,20 @@ void removeVehicleList(AdjList* List, int ID) {
         No *atual = List->cabeca;
         while (atual != NULL) {
             if (((Vehicle *) atual->v)->ID == ID) {
-                if(atual == List->cabeca) {
+                if (atual == List->cabeca) {
                     List->cabeca = atual->prox;
                     free(atual->v);
                     free(atual);
-                }
-                else {
+                } else {
                     anterior->prox = atual->prox;
                     free(atual->v);
                     free(atual);
                 }
                 return;
             }
-        anterior = atual;
-        atual = atual->prox;
+
+            anterior = atual;
+            atual = atual->prox;
         }
     }
 }
@@ -74,11 +72,11 @@ void removeVehicleList(AdjList* List, int ID) {
 ////////////////////////////////////////////////////////////////////////////////
 
 void free_list(AdjList* List) {
-    if(!isEmpty(List)){
+    if (!isEmpty(List)) {
         No *proxNo, *atual;
 
         atual = List->cabeca;
-        while(atual != NULL){
+        while (atual != NULL) {
             proxNo = atual->prox;
             free(atual->v);
             free(atual);
