@@ -16,11 +16,13 @@
 unsigned long int time_running = 0;
 
 int main() {
+#ifdef NCURSES_SIMULATE
+    initscr();			                          /* Start curses mode        */
+#endif
+
     struct timespec ts;
     ts.tv_sec = 100 / 1000;
     ts.tv_nsec = (100 % 1000) * 1000000;
-
-    initscr();			        /* Start curses mode 		  */
 
     AdjList* CarList = malloc(sizeof(AdjList));
     CarList->cabeca = NULL;

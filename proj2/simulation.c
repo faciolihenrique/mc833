@@ -21,22 +21,17 @@ extern unsigned long int time_running;
 void simulate(AdjList* CarList) {
     if(time_running == 0){
         addVehicleList(CarList, create_vehicle(1, Car, 1, North));
-        //change_car_speed(&CarList->cabeca->v, 2);
         addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, East));
         addVehicleList(CarList, create_vehicle(3, Truck, 1, South));
         addVehicleList(CarList, create_vehicle(4, Truck, 1, West));
-        update_map(CarList, CrossMap);
-        printMap(CrossMap);
     }
-
 
     update_cars(CarList);
 
-    update_map(CarList,CrossMap);
-
+#ifdef NCURSES_SIMULATE
+    update_map(CarList, CrossMap);
     printMap(CrossMap);
-
-
+#endif
     ++time_running;
 }
 
@@ -202,10 +197,12 @@ int timeToSendPackage(Vehicle* v) {
     return 0;
 }
 
+y = t/v;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 int timeToMove(Vehicle* v) {
-    if ( (time_running - v->entry_time)% SPEED_INTERVAL == 0) {
+    if ( (time_running - v->entry_time) % SPEED_INTERVAL == 0) {
         return 1;
     }
     return 0;

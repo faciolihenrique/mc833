@@ -21,4 +21,7 @@
 #define CON_ADDRESS "localhost"
 #define ENT_ADDRESS "localhost"
 
+
+//#define NCURSES_SIMULATE            // Enable this if want to see cars walking
+
 #endif
