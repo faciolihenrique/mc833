@@ -86,3 +86,52 @@ void free_list(AdjList* List) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+void addServerCarList(AdjList* List, ServerCar* v) {
+    No *novo = (No *) malloc(sizeof(No));
+
+    if(!novo){
+        printf("Sem memoria disponivel!\n");
+        exit(1);
+    }
+
+    /* Creates the node */
+    novo->v = (void*) v;
+    novo->prox = NULL;
+
+    if (isEmpty(List)) {
+        List->cabeca = novo;
+    } else {
+        No *tmp = List->cabeca;
+        while(tmp->prox != NULL) {
+            tmp = tmp->prox;
+        }
+        tmp->prox = novo;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void removeServerCarList(AdjList* List, int ID) {
+    if(!isEmpty(List)){
+        No *anterior = NULL;
+        No *atual = List->cabeca;
+        while (atual != NULL) {
+            if (((ServerCar *) atual->v)->ID == ID) {
+                if (atual == List->cabeca) {
+                    List->cabeca = atual->prox;
+                    free(atual->v);
+                    free(atual);
+                } else {
+                    anterior->prox = atual->prox;
+                    free(atual->v);
+                    free(atual);
+                }
+                return;
+            }
+
+            anterior = atual;
+            atual = atual->prox;
+        }
+    }
+}

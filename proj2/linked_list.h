@@ -26,9 +26,9 @@ void addVehicleList(AdjList* List, Vehicle* v);
 void removeVehicleList(AdjList* List, int ID);
 
 /* Add an element to the list */
-void addPackageList(AdjList* List, Package* v);
+void addServerCarList(AdjList* List, ServerCar* v);
 /* Removes the vehicle v from the list */
-void removePackageList(AdjList* List, int ID);
+void removeServerCarList(AdjList* List, int ID);
 
 
 
