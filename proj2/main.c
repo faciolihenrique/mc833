@@ -23,6 +23,7 @@ int main() {
     initscr();			        /* Start curses mode 		  */
 
     AdjList* CarList = malloc(sizeof(AdjList));
+    CarList->cabeca = NULL;
 
     create_router();    //  Inicializa o roteador (criando um servidor de security, media, confort)
     printf("\n");

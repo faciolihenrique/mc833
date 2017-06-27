@@ -23,22 +23,21 @@ char CrossMap[SIZE_MAP][SIZE_MAP];
 void simulate(AdjList* CarList) {
     if(time_running == 0){
         addElement(CarList, create_vehicle(1, Car, 1, South));
-        update_car_movement(CarList->cabeca->v);
-        //addElement(CarList, create_vehicle(2, DoubleTruck, 1, East));
-        //addElement(CarList, create_vehicle(2, Truck, 1, North));
-        //addElement(CarList, create_vehicle(2, Truck, 1, West));
-        update_map(CarList,CrossMap);
+        //change_car_speed(&CarList->cabeca->v, 2);
+        addElement(CarList, create_vehicle(2, DoubleTruck, 1, East));
+        addElement(CarList, create_vehicle(3, Truck, 1, North));
+        addElement(CarList, create_vehicle(4, Truck, 1, West));
+        update_map(CarList, CrossMap);
         printMap(CrossMap);
     }
 
 
     /* If the time mod SPEED_INTERVAL is 0, then its time to the cars to walk */
-    //if (time_running % SPEED_INTERVAL) {
-    //    update_car_movement(CarList->cabeca->v);
-    //    //update_cars(CarList);
-    //    update_map(CarList,CrossMap);
-    //    printMap(CrossMap);
-    //}
+    if (time_running % SPEED_INTERVAL) {
+        update_cars(CarList);
+        update_map(CarList,CrossMap);
+        printMap(CrossMap);
+    }
 
     ++time_running;
 }
@@ -87,30 +86,36 @@ void update_cars(AdjList* List) {
     atual = List->cabeca;
     while(atual != NULL) {
         proxNo = atual->prox;
-        update_car_movement(atual->v);
+        update_car_movement(&atual->v);
+        if((atual->v.pos.y/* + (atual->v.length - 1)*/) < 0
+            || (atual->v.pos.y/* - (atual->v.length - 1)*/) >= SIZE_MAP
+            || (atual->v.pos.x/* + (atual->v.length - 1)*/) < 0
+            || (atual->v.pos.x/* - (atual->v.length - 1)*/) >= SIZE_MAP) {
+            removeElement(List, atual->v);
+        }
         atual = proxNo;
     }
 }
 
-void update_car_movement(Vehicle v) {
-    switch (v.dir) {
+void update_car_movement(Vehicle* v) {
+    switch (v->dir) {
         case North:
-            v.pos.y -= v.car_speed;
+            v->pos.y -= v->car_speed;
             break;
         case West:
-            v.pos.x -= v.car_speed;
+            v->pos.x -= v->car_speed;
             break;
         case South:
-            v.pos.y += v.car_speed;
+            v->pos.y += v->car_speed;
             break;
         case East:
-            v.pos.x += v.car_speed;
+            v->pos.x += v->car_speed;
             break;
     }
 }
 
-void change_car_speed(Vehicle v, int acceleration) {
-    v.car_speed += acceleration;
+void change_car_speed(Vehicle* v, int acceleration) {
+    v->car_speed += acceleration;
 }
 
 void send_package(Vehicle v) {
