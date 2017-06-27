@@ -16,4 +16,9 @@
 #define PACKAGE_INTERVAL 25         // Time to send the packages (in ms)
 #define SPEED_INTERVAL 10           // Block_walking = Speed/SPEED_INTERVAL(in ms)
 
+
+#define SEC_ADDRESS "localhost"
+#define CON_ADDRESS "localhost"
+#define ENT_ADDRESS "localhost"
+
 #endif
