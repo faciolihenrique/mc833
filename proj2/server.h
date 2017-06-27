@@ -2,17 +2,7 @@
 #define SERVER_H
 
 #include "main.h"
-
-typedef struct {
-    int ID;
-    Position pos;
-    Direction dir;
-    Speed car_speed;
-    Timestamp time_rec;
-    Timestamp estimated_time_in;
-    Timestamp estimated_time_out;
-    Timestamp destroy;
-} ServerCars;
+#include "linked_list.h"
 
 /*~~~~~~ Functions ~~~~~~~*/
 /* Creating the servers.
@@ -45,5 +35,13 @@ int create_entertainment_server();
  * Receiving this package always send a response doubled sized
  */
 int create_confort_server();
+
+Action dealWithPackage();
+
+ServerCar* createNewServerCar(int ID, Position pos, Direction dir, Speed car_speed, Timestamp time_rec);
+
+void detectColision(AdjList List, ServerCar car);
+
+int newSpeed(ServerCar car1, ServerCar car2);
 
 #endif
