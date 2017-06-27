@@ -138,14 +138,11 @@ void removeServerCarList(AdjList* List, int ID) {
 
 int isInServerCarList(AdjList* List, int ID) {
     if(!isEmpty(List)){
-        No *anterior = NULL;
         No *atual = List->cabeca;
         while (atual != NULL) {
             if (((ServerCar *) atual->v)->ID == ID) {
                 return 1;
             }
-
-            anterior = atual;
             atual = atual->prox;
         }
     }

@@ -480,7 +480,7 @@ int create_confort_server() {
 }
 
 Action dealWithPackage(AdjList List, SecPackageToServer* package) {
-
+    return 0;
 }
 
 ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Direction dir, Speed car_speed, Timestamp time_rec) {
@@ -505,7 +505,7 @@ void detectColision(AdjList List, ServerCar car) {
 }
 
 int newSpeed(ServerCar car1, ServerCar car2) {
-
+    return 0;
 }
 
 #endif
