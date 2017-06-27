@@ -2,12 +2,12 @@
 # Car Simulation
 # ####################################################
 CC = gcc
-CFLAGS = -Wall -std=c11
+CFLAGS = -Wall -std=c11 -lncurses
 
 TARGET = simulation.out
 INC_DIR := -I.
 
-SRCS := main.c server.c simulation.c linked_list.c
+SRCS := main.c server.c simulation.c linked_list.c printing.c
 OBJS := $(SRCS:.c=.o)
 
 #------------------------------------------------------

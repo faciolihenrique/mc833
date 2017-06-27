@@ -19,6 +19,8 @@ void create_router() {
             } else {
                 if (fork()) {
                     create_confort_server();
+                } else {
+                    while(1);
                 }
             }
         }

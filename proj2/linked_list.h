@@ -3,7 +3,6 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
-
 /* Node struct */
 typedef struct No {
     Vehicle v;
@@ -12,7 +11,7 @@ typedef struct No {
 
 /* Adjacency List struct */
 typedef struct {
-    No* cabeca;
+    struct No* cabeca;
 } AdjList;
 
 /* Map */

@@ -1,5 +1,13 @@
+/* definition header
+ *
+ * contains variables that can be changed to modify the behavior
+ */
+
+
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
+
+#define SIMULATION1                 // Change to which simulation
 
 #define TCP                         // Use TCP or UDP
 #define SIZE_MAP 18                 // Radius of the comunication with the router

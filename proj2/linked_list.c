@@ -1,7 +1,7 @@
 /* 2017
  * Projeto 2 - mc833 - Laboratório de Redes
  * linked_list.c
- * 
+ *
  * Henrique Noronha Facioli - 157986
  * Thiago Silva de Farias - 148077
  */
@@ -10,6 +10,7 @@
 
 void addElement(AdjList* List, Vehicle v) {
     No *novo = (No *) malloc(sizeof(No));
+
     if(!novo){
         printf("Sem memoria disponivel!\n");
         exit(1);
@@ -32,10 +33,11 @@ void addElement(AdjList* List, Vehicle v) {
 }
 
 int isEmpty(AdjList* List) {
-    if(List->cabeca == NULL)
+    if(List->cabeca == NULL) {
         return 1;
-    else
+    } else {
         return 0;
+    }
 }
 
 void removeElement(AdjList* List, Vehicle v) {

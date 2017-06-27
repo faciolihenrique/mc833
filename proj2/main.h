@@ -1,3 +1,8 @@
+/* main header
+ *
+ * Contains things that are shared between all the modules of the project
+ *
+ */
 #ifndef MAIN_H
 #define MAIN_H
 
@@ -6,15 +11,14 @@
 #include <unistd.h>
 #include <string.h>
 #include <strings.h>
-#include <unistd.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <sys/select.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <uchar.h>
 
 #include "definitions.h"
-#include "linked_list.h"
 
 /* Simulation */
 #define SIZE_CAR 1
