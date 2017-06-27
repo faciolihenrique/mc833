@@ -13,7 +13,7 @@
 #include "simulation.h"
 #include "printing.h"
 
-
+unsigned long int time_running = 0;
 
 int main() {
     struct timespec ts;

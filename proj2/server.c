@@ -9,6 +9,10 @@
 #include "main.h"
 #include "server.h"
 
+extern unsigned long int time_running;
+
+////////////////////////////////////////////////////////////////////////////////
+
 void create_router() {
     if(fork()){
         if(fork()){
