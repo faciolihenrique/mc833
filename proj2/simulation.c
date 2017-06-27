@@ -30,12 +30,12 @@ void simulate(AdjList* CarList) {
     }
 
 
-    /* If the time mod SPEED_INTERVAL is 0, then its time to the cars to walk */
-    if ((time_running % SPEED_INTERVAL) == 0) {
-        update_cars(CarList);
-        update_map(CarList,CrossMap);
-        printMap(CrossMap);
-    }
+    update_cars(CarList);
+
+    update_map(CarList,CrossMap);
+
+    printMap(CrossMap);
+
 
     ++time_running;
 }
@@ -90,14 +90,19 @@ void update_cars(AdjList* List) {
 
     atual = List->cabeca;
     while(atual != NULL) {
-        proxNo = atual->prox;
-        update_car_movement((Vehicle*) atual->v);
-        if(    (((Vehicle*) atual->v)->pos.y) < 0
-            || (((Vehicle*) atual->v)->pos.y) >= SIZE_MAP
-            || (((Vehicle*) atual->v)->pos.x) < 0
-            || (((Vehicle*) atual->v)->pos.x) >= SIZE_MAP) {
-            removeVehicleList(List,  ((Vehicle *) atual->v)->ID);
+        if (timeToMove((Vehicle*) atual->v)) {
+            update_car_movement((Vehicle*) atual->v);
+            if(    (((Vehicle*) atual->v)->pos.y) < 0
+                || (((Vehicle*) atual->v)->pos.y) >= SIZE_MAP
+                || (((Vehicle*) atual->v)->pos.x) < 0
+                || (((Vehicle*) atual->v)->pos.x) >= SIZE_MAP) {
+                removeVehicleList(List,  ((Vehicle *) atual->v)->ID);
+            }
         }
+        if (timeToSendPackage((Vehicle*) atual->v)) {
+            dealSecToServer((Vehicle*) atual->v);
+        }
+        proxNo = atual->prox;
         atual = proxNo;
     }
 }
@@ -186,6 +191,24 @@ void insert_v_in_map(Vehicle* v, char map[SIZE_MAP][SIZE_MAP]) {
             map[(v->pos).y][(v->pos).x-2] = 'd';
         }
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+int timeToSendPackage(Vehicle* v) {
+    if ( (time_running - v->entry_time)% PACKAGE_INTERVAL == 0) {
+        return 1;
+    }
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+int timeToMove(Vehicle* v) {
+    if ( (time_running - v->entry_time)% SPEED_INTERVAL == 0) {
+        return 1;
+    }
+    return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

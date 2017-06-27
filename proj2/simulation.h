@@ -25,11 +25,20 @@ void update_map(AdjList* List, char matrix[SIZE_MAP][SIZE_MAP]);
 /* Insert the vehicle v car on the map */
 void insert_v_in_map(Vehicle* v, char map[SIZE_MAP][SIZE_MAP]);
 
-/* Send an update from the cars to the router */
+/* Send an update from the cars to the router specified */
 void* connectToServer(Vehicle* v, ConectionType contype);
 
-void connectSecToServer(Vehicle* v);
-void connectEntToServer(Vehicle* v);
-void connectConToServer(Vehicle* v);
+/* Check if its time to move the car */
+int timeToMove(Vehicle* v);
+
+/* Check if its time to the car send the package */
+int timeToSendPackage(Vehicle* v);
+
+/* Connect to sec server and do what is needed */
+void dealSecToServer(Vehicle* v);
+
+void dealEntToServer(Vehicle* v);
+
+void dealConToServer(Vehicle* v);
 
 #endif
