@@ -20,10 +20,10 @@ extern unsigned long int time_running;
 
 void simulate(AdjList* CarList) {
     if(time_running == 0){
-        addVehicleList(CarList, create_vehicle(1, Car, 1, North));
-        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, East));
+        addVehicleList(CarList, create_vehicle(1, Car, 1, East));
+        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, North));
         addVehicleList(CarList, create_vehicle(3, Truck, 1, South));
-        addVehicleList(CarList, create_vehicle(4, Truck, 1, West));
+        addVehicleList(CarList, create_vehicle(4, Truck, 3, West));
     }
 
     update_cars(CarList);
@@ -95,7 +95,7 @@ void update_cars(AdjList* List) {
             }
         }
         if (timeToSendPackage((Vehicle*) atual->v)) {
-            dealSecToServer((Vehicle*) atual->v);
+            //dealSecToServer((Vehicle*) atual->v);
         }
         proxNo = atual->prox;
         atual = proxNo;
@@ -107,16 +107,16 @@ void update_cars(AdjList* List) {
 void update_car_movement(Vehicle* v) {
     switch (v->dir) {
         case North:
-            (v->pos).y -= v->car_speed;
+            (v->pos).y -= 1;
             break;
         case West:
-            (v->pos).x -= v->car_speed;
+            (v->pos).x -= 1;
             break;
         case South:
-            (v->pos).y += v->car_speed;
+            (v->pos).y += 1;
             break;
         case East:
-            (v->pos).x += v->car_speed;
+            (v->pos).x += 1;
             break;
     }
 }
@@ -197,12 +197,10 @@ int timeToSendPackage(Vehicle* v) {
     return 0;
 }
 
-y = t/v;
-
 ////////////////////////////////////////////////////////////////////////////////
 
 int timeToMove(Vehicle* v) {
-    if ( (time_running - v->entry_time) % SPEED_INTERVAL == 0) {
+    if ( (time_running - v->entry_time) % (int)(SPEED_INTERVAL/v->car_speed) == 0) {
         return 1;
     }
     return 0;
