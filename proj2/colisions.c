@@ -14,7 +14,7 @@ extern unsigned long int time_running;
 ////////////////////////////////////////////////////////////////////////////////
 
 Action dealWithPackage(AdjList* List, SecPackageToServer* package) {
-    // removeOldPackages();
+    removeOldPackages(List);
     if(isInServerCarList(List, package->ID)) {
         return Continue;
     }
