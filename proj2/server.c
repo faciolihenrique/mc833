@@ -122,7 +122,7 @@ int create_security_server() {
         rsp->ac = dealWithPackage(EnabledCars, (SecPackageToServer*) buf, &speed); /* Makes the analyses of the package received */
         rsp->car_speed = speed;
 
-        send(newsoc, (const void*) rsp, sizeof(SecPackageToServer), 0);
+        send(newsoc, (const void*) rsp, sizeof(SecPackageToClient), 0);
 
         newsoc = accept(s, (struct sockaddr *) &client_sa, &len);
     }
