@@ -16,20 +16,19 @@
 unsigned long int time_running = 0;
 
 int main() {
-#ifdef NCURSES_SIMULATE
-    initscr();			                          /* Start curses mode        */
-#endif
+    AdjList* CarList = malloc(sizeof(AdjList));
+    CarList->cabeca = NULL;
 
+    /* Time to send a signal to the simulation */
     struct timespec ts;
     ts.tv_sec = 100 / 1000;
     ts.tv_nsec = (100 % 1000) * 1000000;
 
-    AdjList* CarList = malloc(sizeof(AdjList));
-    CarList->cabeca = NULL;
-
     create_router();    //  Inicializa o roteador (criando um servidor de security, media, confort)
-    printf("\n");
 
+#ifdef NCURSES_SIMULATE
+    initscr();			                          /* Start curses mode        */
+#endif
     while(1){
         nanosleep(&ts, NULL);
         simulate(CarList);
