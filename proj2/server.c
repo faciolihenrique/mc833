@@ -209,6 +209,9 @@ int create_entertainment_server() {
                     printf("Entertainment:   From: %s\n", inet_ntoa(client_helper.sin_addr));
                     printf("Entertainment: Message:\n %s\n", buf);
                 }
+
+                //////// COLOCAR DELAY
+
                 send(newsoc, (const void*) buf, strlen(buf) + 1, 0);
             }
         }
@@ -295,6 +298,11 @@ int create_confort_server() {
                     printf("Confort:   From: %s\n", inet_ntoa(client_helper.sin_addr));
                     printf("Confort: Message:\n %s\n", buf);
                 }
+
+
+                //////// COLOCAR DELAY
+
+
                 send(newsoc, (const void*) buf, strlen(buf) + 1, 0);
             }
         }
