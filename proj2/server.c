@@ -37,22 +37,7 @@ void create_router() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-#ifdef UDP
-
-int create_security_server() {
-    return 1;
-}
-int create_entertainment_server() {
-    return 1;
-}
-int create_confort_server() {
-    return 1;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-#else
+#ifdef SEC_TCP
 
 int create_security_server() {
     AdjList* EnabledCars = calloc(1, sizeof(AdjList));
@@ -64,12 +49,6 @@ int create_security_server() {
     port = SEC_PORT;
     printf("Starting Security Server on %d\n", port);
 
-    /* Create a socket and check if its Ok
-     * returns -1 if occurred an error
-     * AF_INET = IPv4
-     * SOCK_STREAM = TCP
-     * 0 = Default
-     */
     s = socket(AF_INET, SOCK_STREAM, 0);
     if ( s < 0 ) {
         printf("Security: Problem occurred when creating a socket\n");
@@ -106,8 +85,6 @@ int create_security_server() {
             printf("Problem on creaing a new connection\n");
         }
 #ifndef NCURSES_SIMULATE
-        printf("Security: New client connected!\n");
-
         if( recv(newsoc, (void*) buf, sizeof(SecPackageToServer), 0) ) {
             printf("Security: Message received");
             printf("\tFrom: %d\n", ((SecPackageToServer*) buf)->ID);
@@ -131,8 +108,72 @@ int create_security_server() {
     return 0;
 }
 
+#else
+
+int create_security_server() {
+    printf("This is a UDP server\n");
+    AdjList* EnabledCars = calloc(1, sizeof(AdjList));
+    struct sockaddr_in so_server, client_sa;
+    char buf[MAX_LINE];
+    int len, s, port, b, cl_size, speed;
+
+    port = SEC_PORT;
+    printf("Starting Security Server on %d\n", port);
+
+    s = socket(AF_INET, SOCK_DGRAM, 0);
+    if ( s < 0 ) {
+        printf("Problem occurred when creating a socket\n");
+        exit(0);
+    }
+
+    /* Criação da estrutura de dados de endereço */
+    bzero((char *)&so_server, sizeof(so_server));
+    so_server.sin_family = AF_INET;
+    so_server.sin_port = htons(port);
+    so_server.sin_addr.s_addr = INADDR_ANY;
+
+    /* Associar socket ao descritor */
+    b = bind(s, (struct sockaddr *) &so_server, sizeof(so_server));
+    if (b < 0) {
+        printf("Problem occurred when binding a socket\n");
+        exit(0);
+    }
+
+	/* Aguarda/aceita conexão */
+    cl_size = sizeof(client_sa);
+    SecPackageToClient* rsp = calloc(1, sizeof(SecPackageToClient));
+    while(1){
+        len = 0;
+        len = recvfrom(s, buf, sizeof(SecPackageToServer), 0, (struct sockaddr *) &client_sa, (socklen_t *)&cl_size);
+        if (len < 0) {
+            printf("Problem occurred in recvfrom\n");
+        } else if (len > 0) {
+#ifndef NCURSES_SIMULATE
+            printf("Security: Message received");
+            printf("\tFrom: %d\n", ((SecPackageToServer*) buf)->ID);
+#endif
+            /* Creates the package to send based on what it has returned */
+            rsp->ID = ((SecPackageToServer*) buf)->ID;
+            rsp->ac = dealWithPackage(EnabledCars, (SecPackageToServer*) buf, &speed); /* Makes the analyses of the package received */
+            rsp->car_speed = speed;
+        }
+
+        len = sendto(s, rsp, sizeof(SecPackageToClient), 0, (struct sockaddr *) &client_sa, cl_size);
+        if (len < 0) {
+            printf("Problem occurred in sendto\n");
+        }
+    }
+    printf("Finishing Server\n");
+
+    return 0;
+    exit(0);
+}
+
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifdef ENT_TCP
 int create_entertainment_server() {
 
     struct sockaddr_in socket_address, client_sa, client_helper;
@@ -219,9 +260,13 @@ int create_entertainment_server() {
     printf("Finishing Server\n");
     return 0;
 }
+#else
+
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifdef CON_TCP
 int create_confort_server() {
 
     struct sockaddr_in socket_address, client_sa, client_helper;
@@ -310,5 +355,6 @@ int create_confort_server() {
     printf("Finishing Server\n");
     return 0;
 }
+#else
 
 #endif

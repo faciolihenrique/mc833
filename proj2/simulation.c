@@ -24,8 +24,8 @@ int simulate(AdjList* CarList) {
 #ifdef SIMULATE1
     if(time_running == 0){
         addVehicleList(CarList, create_vehicle(1, Car, 3, West));
-        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, North));
-        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 1, East));
+        //addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, North));
+        //addVehicleList(CarList, create_vehicle(3, DoubleTruck, 1, East));
         //addVehicleList(CarList, create_vehicle(2, DoubleTruck, 3, East));
         //addVehicleList(CarList, create_vehicle(3, DoubleTruck, 3, South));
         //addVehicleList(CarList, create_vehicle(4, DoubleTruck, 3, West));
@@ -228,7 +228,12 @@ int timeToMove(Vehicle* v) {
 ////////////////////////////////////////////////////////////////////////////////
 
 void dealSecToServer(Vehicle* v) {
-    SecPackageToClient* package = connectToServer(v, Security);
+#ifdef SEC_TCP
+    SecPackageToClient* package = connectToTCPServer(v, Security);
+#else
+    SecPackageToClient* package = connectToUDPServer(v, Security);
+#endif
+
 #ifndef NCURSES_SIMULATE
     printf("Client:\n");
     printf("\tCar:    %d %d\n", v->ID, package->ID);
@@ -246,26 +251,23 @@ void dealSecToServer(Vehicle* v) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void connectEntToServer(Vehicle* v) {
-
-}
-////////////////////////////////////////////////////////////////////////////////
-
-void connectConToServer(Vehicle* v) {
+void dealEntToServer(Vehicle* v) {
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void* connectToServer(Vehicle* v, ConectionType contype) {
-#ifdef UDP
+void dealConToServer(Vehicle* v) {
 
-#else
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void* connectToTCPServer(Vehicle* v, ConectionType contype) {
     struct hostent* host_address = NULL;
     struct sockaddr_in socket_address, socket_local;
     char* msg = calloc(PKG_ENT_SIZE, sizeof(char));
     int s, port, c;
-
 
     if (contype == Security) {
         port = SEC_PORT;
@@ -284,12 +286,6 @@ void* connectToServer(Vehicle* v, ConectionType contype) {
         return NULL;
     }
 
-    /* Create a socket and check if its Ok
-     * returns -1 if occurred an error
-     * AF_INET = IPv4
-     * SOCK_STREAM = TCP
-     * 0 = Default
-     */
     s = socket(AF_INET, SOCK_STREAM, 0);
     if ( s < 0 ) {
         printf("Problem occurred when creating a socket\n");
@@ -298,7 +294,6 @@ void* connectToServer(Vehicle* v, ConectionType contype) {
 
     /* Allocate the socket  and fills with the necessary info */
     bzero((char *)&socket_address, sizeof(socket_address));
-    //socket_address = (struct sockaddr_in*) calloc(1, sizeof(struct sockaddr_in*));
     socket_address.sin_family = AF_INET;
     socket_address.sin_port = htons(port);
     socket_address.sin_addr = *(struct in_addr*) host_address->h_addr_list[0];
@@ -357,6 +352,87 @@ void* connectToServer(Vehicle* v, ConectionType contype) {
     }
 
     return msg;
-#endif
-    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void* connectToUDPServer(Vehicle* v, ConectionType contype) {
+    struct hostent *host_address = NULL;
+    struct sockaddr_in socket_address;
+    char* msg = calloc(PKG_ENT_SIZE, sizeof(char));
+    int s, port, c;
+
+    if (contype == Security) {
+        port = SEC_PORT;
+        host_address = gethostbyname(SEC_ADDRESS);
+    } else if (contype == Entertainment) {
+        port = ENT_PORT;
+        host_address = gethostbyname(ENT_ADDRESS);
+    } else if (contype == Confort) {
+        port = CON_PORT;
+        host_address = gethostbyname(CON_ADDRESS);
+    }
+
+    if (host_address == NULL){
+        printf("Error on gethostbyname\n");
+        return NULL;
+    }
+
+    s = socket(AF_INET, SOCK_DGRAM, 0);
+    if ( s < 0 ) {
+        printf("Problem occurred when creating a socket\n");
+        return NULL;
+    }
+
+    /* Allocate the socket  and fills with the necessary info */
+    bzero((char *)&socket_address, sizeof(socket_address));
+    //socket_address = (struct sockaddr_in*) calloc(1, sizeof(struct sockaddr_in*));
+    socket_address.sin_family = AF_INET;
+    socket_address.sin_port = htons(port);
+    socket_address.sin_addr = *(struct in_addr*) host_address->h_addr_list[0];
+
+    /* criação de socket ativo*/
+    c = connect(s,(struct sockaddr*) &socket_address, sizeof(struct sockaddr_in));
+    if (c < 0) {
+        printf("Problem occurred when connecting\n");
+        return NULL;
+    }
+
+    int len = sizeof(socket_address);
+    if (contype == Security) {
+        SecPackageToServer* pkg = calloc(1, sizeof(SecPackageToServer));
+
+        pkg->car_speed = v->car_speed;
+        pkg->dir       = v->dir;
+        pkg->ID        = v->ID;
+        pkg->pos       = v->pos;
+        pkg->length    = v->length;
+        pkg->type      = v->type;
+        pkg->time_sent = time_running;
+
+        if (sendto(s, (const void*) pkg, sizeof(SecPackageToServer), 0, (const struct sockaddr*) &socket_address, len) < 0) {
+            printf("Problem sending message\n");
+            return NULL;
+        }
+
+    } else if (contype == Entertainment) {
+        char pkg[PKG_ENT_SIZE] = "\0";
+
+        if (sendto(s, (const void*) pkg, PKG_ENT_SIZE, 0, (const struct sockaddr*) &socket_address, len) < 0) {
+            printf("Problem sending message\n");
+            return NULL;
+        }
+
+    } else if (contype == Confort) {
+        char pkg[PKG_CON_SIZE] = "\0";
+
+        if (sendto(s, (const void*) pkg, PKG_ENT_SIZE, 0, (const struct sockaddr*) &socket_address, len) < 0) {
+            printf("Problem sending message\n");
+            return NULL;
+        }
+    }
+
+    recvfrom(s, (void*) msg, MAX_LINE, 0, (struct sockaddr*) &socket_address, (socklen_t *) &len);
+
+    return (void*) msg;
 }

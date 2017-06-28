@@ -26,7 +26,9 @@ void update_map(AdjList* List, char matrix[SIZE_MAP][SIZE_MAP]);
 void insert_v_in_map(Vehicle* v, char map[SIZE_MAP][SIZE_MAP]);
 
 /* Send an update from the cars to the router specified */
-void* connectToServer(Vehicle* v, ConectionType contype);
+void* connectToTCPServer(Vehicle* v, ConectionType contype);
+
+void* connectToUDPServer(Vehicle* v, ConectionType contype);
 
 /* Check if its time to move the car */
 int timeToMove(Vehicle* v);
