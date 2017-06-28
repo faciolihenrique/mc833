@@ -15,6 +15,9 @@ extern unsigned long int time_running;
 
 void create_router() {
     if(fork()){
+        // This is the main Process
+        // Father of all xD - it will keep the execution
+    } else {
         if(fork()){
             create_security_server();
         } else {
@@ -51,7 +54,7 @@ int create_confort_server() {
 
 int create_security_server() {
     struct sockaddr_in socket_address, client_sa, client_helper;
-    char buf[MAX_LINE];
+    char* buf = calloc(PKG_ENT_SIZE, sizeof(char));
     unsigned int len;
     int s, port, b, l, newsoc;
 
@@ -114,6 +117,7 @@ int create_security_server() {
             if (i < 0){
                 printf("Security: Failed to estabilsh connect\n");
             } else {
+#ifndef NCURSES_SIMULATE
                 printf("Security: New client connected!\n");
                 printf("Security: Port: %d", ntohs(client_helper.sin_port));
                 printf("\tFrom: %s\n", inet_ntoa(client_helper.sin_addr));
@@ -123,7 +127,9 @@ int create_security_server() {
                     printf("\tPort: %d", ntohs(client_helper.sin_port));
                     printf("\tFrom: %d\n", ((SecPackageToServer*) buf)->ID);
                 }
-
+#else
+                recv(newsoc, (void*) buf, sizeof(SecPackageToServer), 0);
+#endif
                 SecPackageToClient* rsp = calloc(1, sizeof(SecPackageToClient));
 
                 rsp->ID = ((SecPackageToServer*) buf)->ID;
