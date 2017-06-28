@@ -26,9 +26,9 @@
 
 /* Conections definitons */
 
-#define ENT_PORT 42010
-#define SEC_PORT 43010
-#define CON_PORT 44010
+#define ENT_PORT 42240
+#define SEC_PORT 43240
+#define CON_PORT 44240
 
 #define PKG_ENT_SIZE 1000
 #define PKG_SEC_SIZE 30
