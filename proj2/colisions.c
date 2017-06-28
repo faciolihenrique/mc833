@@ -23,6 +23,8 @@ Action dealWithPackage(AdjList* List, SecPackageToServer* package) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Direction dir, Speed car_speed, Timestamp time_rec) {
     ServerCar* s = calloc(1,sizeof(ServerCar));
 
@@ -40,6 +42,8 @@ ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Di
 
     return s;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 Action discoverAction(AdjList* List, ServerCar* car) {
     No *atual = List->cabeca;
@@ -83,6 +87,8 @@ Action discoverAction(AdjList* List, ServerCar* car) {
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 int thereIsColision(ServerCar* car1, ServerCar* car2) {
     if(car1->dir == North && car2->dir == East) {

@@ -100,7 +100,7 @@ void update_cars(AdjList* List) {
             }
         }
         if (flag == 0 && timeToSendPackage((Vehicle*) atual->v)) {
-            //dealSecToServer((Vehicle*) atual->v);
+            dealSecToServer((Vehicle*) atual->v);
         }
         proxNo = atual->prox;
         atual = proxNo;
@@ -216,6 +216,10 @@ int timeToMove(Vehicle* v) {
 void dealSecToServer(Vehicle* v) {
     SecPackageToClient* package = connectToServer(v, Security);
 
+    printf("Car:    %d %d\n", v->ID, package->ID);
+    printf("Action: %d %d\n",Continue, package->ac);
+    printf("Speed:  %d %d\n",v->car_speed, package->car_speed);
+
     if (package->ac == Increase) {
         change_car_speed(v, package->car_speed);
     } else if (package->ac == Decrease) {
@@ -308,7 +312,7 @@ void* connectToServer(Vehicle* v, ConectionType contype) {
         pkg->pos       = v->pos;
         pkg->time_sent = time_running;
 
-        if (send(s, (const void*) pkg, sizeof(pkg), 0) < 0) {
+        if (send(s, (const void*) pkg, sizeof(SecPackageToServer), 0) < 0) {
             printf("Problem sending message\n");
             return NULL;
         }
