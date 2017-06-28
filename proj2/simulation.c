@@ -22,10 +22,12 @@ extern unsigned long int time_running;
 
 void simulate(AdjList* CarList) {
     if(time_running == 0){
-        addVehicleList(CarList, create_vehicle(1, DoubleTruck, 3, North));
-        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 3, East));
-        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 3, South));
-        addVehicleList(CarList, create_vehicle(4, DoubleTruck, 3, West));
+        addVehicleList(CarList, create_vehicle(1, Car, 1, West));
+        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, North));
+        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 1, East));
+        //addVehicleList(CarList, create_vehicle(2, DoubleTruck, 3, East));
+        //addVehicleList(CarList, create_vehicle(3, DoubleTruck, 3, South));
+        //addVehicleList(CarList, create_vehicle(4, DoubleTruck, 3, West));
     }
 
     update_cars(CarList);
@@ -226,17 +228,16 @@ int timeToMove(Vehicle* v) {
 
 void dealSecToServer(Vehicle* v) {
     SecPackageToClient* package = connectToServer(v, Security);
+    printf("Client:\n");
+    printf("\tCar:    %d %d\n", v->ID, package->ID);
+    printf("\tAction: %d %d\n", None, package->ac);
+    printf("\tSpeed:  %d %d\n",v->car_speed, package->car_speed);
 
-    printf("Car:    %d %d\n", v->ID, package->ID);
-    printf("Action: %d %d\n", None, package->ac);
-    printf("Speed:  %d %d\n",v->car_speed, package->car_speed);
-
-    if (package->ac == Increase) {
+    if (package->ac == Increase || package->ac == Decrease) {
         change_car_speed(v, package->car_speed);
-    } else if (package->ac == Decrease) {
-        change_car_speed(v, -package->car_speed);
     } else if (package->ac == Ambulance) {
-
+        printf("CHAMA AMBULANCIA FIAOO\n");
+        printf("IÓÓÓÓN I\n");
     }
 }
 

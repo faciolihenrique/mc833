@@ -96,50 +96,35 @@ int create_security_server() {
     /* Aguarda/aceita conexão */
     len = sizeof(client_sa);
 
+    newsoc = accept(s, (struct sockaddr *) &client_sa, &len);
     while(1){
-        newsoc = accept(s, (struct sockaddr *) &client_sa, &len);
-
+        /* receber e imprimir texto na tela, enviar eco  */
         if(newsoc < 0){
-            printf("Security: Problem on creaing a new connection\n");
+            printf("Problem on creaing a new connection\n");
         }
-
-        int pid = fork();
-        /* pid = 0 => Processo pai
-         * pid > 0 => Processo filho
-         * pid < 0 => erro
-         */
-        if (pid < 0){
-            printf("Security: Failed to create a new fork\n");
-            close(newsoc);
-        } else if (pid > 0) {
-            int i = getpeername(newsoc, (struct sockaddr *) &client_helper, &len);
-
-            if (i < 0){
-                printf("Security: Failed to estabilsh connect\n");
-            } else {
 #ifndef NCURSES_SIMULATE
-                printf("Security: New client connected!\n");
-                printf("Security: Port: %d", ntohs(client_helper.sin_port));
-                printf("\tFrom: %s\n", inet_ntoa(client_helper.sin_addr));
+        printf("Security: New client connected!\n");
 
-                if( recv(newsoc, (void*) buf, sizeof(SecPackageToServer), 0) ) {
-                    printf("Security: Message received");
-                    printf("\tPort: %d", ntohs(client_helper.sin_port));
-                    printf("\tFrom: %d\n", ((SecPackageToServer*) buf)->ID);
-                }
-#else
-                recv(newsoc, (void*) buf, sizeof(SecPackageToServer), 0);
-#endif
-                /* Creates the package to send based on what it has returned */
-                SecPackageToClient* rsp = calloc(1, sizeof(SecPackageToClient));
-                rsp->ID = ((SecPackageToServer*) buf)->ID;
-                rsp->ac = dealWithPackage(EnabledCars, (SecPackageToServer*) buf, &speed); /* Makes the analyses of the package received */
-                rsp->car_speed = speed;
-
-                send(newsoc, (const void*) rsp, sizeof(SecPackageToServer), 0);
-            }
+        if( recv(newsoc, (void*) buf, sizeof(SecPackageToServer), 0) ) {
+            printf("Security: Message received");
+            printf("\tPort: %d", ntohs(client_helper.sin_port));
+            printf("\tFrom: %d\n", ((SecPackageToServer*) buf)->ID);
         }
+#else
+        recv(newsoc, (void*) buf, sizeof(SecPackageToServer), 0);
+#endif
+
+        /* Creates the package to send based on what it has returned */
+        SecPackageToClient* rsp = calloc(1, sizeof(SecPackageToClient));
+        rsp->ID = ((SecPackageToServer*) buf)->ID;
+        rsp->ac = dealWithPackage(EnabledCars, (SecPackageToServer*) buf, &speed); /* Makes the analyses of the package received */
+        rsp->car_speed = speed;
+
+        send(newsoc, (const void*) rsp, sizeof(SecPackageToServer), 0);
+
+        newsoc = accept(s, (struct sockaddr *) &client_sa, &len);
     }
+
     printf("Finishing Server\n");
     return 0;
 }
