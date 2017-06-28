@@ -9,10 +9,13 @@
 #include "main.h"
 #include "colisions.h"
 
+extern unsigned long int time_running;
+
+////////////////////////////////////////////////////////////////////////////////
+
 Action dealWithPackage(AdjList* List, SecPackageToServer* package) {
+    removeOldPackages(List);
     if(isInServerCarList(List, package->ID)) {
-        /*Atualizar dados do carro*/
-        //Pensar em como atualizar.
         return Continue;
     }
     else {
@@ -20,9 +23,8 @@ Action dealWithPackage(AdjList* List, SecPackageToServer* package) {
         ServerCar* s;
         s = createNewServerCar(package->ID, package->type, package->length, package->pos, package->dir, package->car_speed, package->time_sent);
         addServerCarList(List, s);
+        return discoverAction(List, s);
     }
-    //Pensar no que retornar.
-    return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -200,5 +202,17 @@ int thereIsColision(ServerCar* car1, ServerCar* car2) {
     /* Both cars are parallel */
     else {
         return 0;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void removeOldPackages(AdjList* List){
+    No *atual = List->cabeca;
+    while(atual != NULL) {
+        if(((ServerCar*) atual->v)->destroy >= time_running) {
+            removeServerCarList(List, ((ServerCar*) atual->v)->ID);
+        }
+        atual = atual->prox;
     }
 }

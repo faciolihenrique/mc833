@@ -12,4 +12,6 @@ Action discoverAction(AdjList* List, ServerCar* car);
 
 int thereIsColision(ServerCar* car1, ServerCar* car2);
 
+void removeOldPackages(AdjList* List);
+
 #endif
