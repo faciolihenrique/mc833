@@ -126,6 +126,8 @@ void update_car_movement(Vehicle* v) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 void change_car_speed(Vehicle* v, int acceleration) {
     v->car_speed += acceleration;
 }
@@ -215,10 +217,6 @@ int timeToMove(Vehicle* v) {
 
 void dealSecToServer(Vehicle* v) {
     SecPackageToClient* package = connectToServer(v, Security);
-
-    printf("Car:    %d %d\n", v->ID, package->ID);
-    printf("Action: %d %d\n",Continue, package->ac);
-    printf("Speed:  %d %d\n",v->car_speed, package->car_speed);
 
     if (package->ac == Increase) {
         change_car_speed(v, package->car_speed);
