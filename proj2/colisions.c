@@ -9,8 +9,12 @@
 #include "main.h"
 #include "colisions.h"
 
+extern unsigned long int time_running;
+
+////////////////////////////////////////////////////////////////////////////////
+
 Action dealWithPackage(AdjList* List, SecPackageToServer* package) {
-    //removeOldPackages();
+    // removeOldPackages();
     if(isInServerCarList(List, package->ID)) {
         return Continue;
     }
@@ -198,5 +202,17 @@ int thereIsColision(ServerCar* car1, ServerCar* car2) {
     /* Both cars are parallel */
     else {
         return 0;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void removeOldPackages(AdjList* List){
+    No *atual = List->cabeca;
+    while(atual != NULL) {
+        if(((ServerCar*) atual->v)->destroy >= time_running) {
+            removeServerCarList(List, ((ServerCar*) atual->v)->ID);
+        }
+        atual = atual->prox;
     }
 }
