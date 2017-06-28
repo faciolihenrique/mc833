@@ -116,15 +116,21 @@ int create_security_server() {
             } else {
                 printf("Security: New client connected!\n");
                 printf("Security: Port: %d", ntohs(client_helper.sin_port));
-                printf("Security: \tFrom: %s\n", inet_ntoa(client_helper.sin_addr));
+                printf("\tFrom: %s\n", inet_ntoa(client_helper.sin_addr));
 
-                if( recv(newsoc, (void*) buf, MAX_LINE, 0) ) {
-                    printf("Security: Message received\n");
-                    printf("Security: Port: %d", ntohs(client_helper.sin_port));
-                    printf("Security:   From: %s\n", inet_ntoa(client_helper.sin_addr));
-                    printf("Security: Message:\n %s\n", buf);
+                if( recv(newsoc, (void*) buf, sizeof(SecPackageToServer), 0) ) {
+                    printf("Security: Message received");
+                    printf("\tPort: %d", ntohs(client_helper.sin_port));
+                    printf("\tFrom: %d\n", ((SecPackageToServer*) buf)->ID);
                 }
-                send(newsoc, (const void*) buf, strlen(buf) + 1, 0);
+
+                SecPackageToClient* rsp = calloc(1, sizeof(SecPackageToClient));
+
+                rsp->ID = ((SecPackageToServer*) buf)->ID;
+                rsp->ac = Continue;
+                rsp->car_speed = ((SecPackageToServer*) buf)->car_speed;
+
+                send(newsoc, (const void*) rsp, sizeof(SecPackageToServer), 0);
             }
         }
     }
@@ -201,7 +207,7 @@ int create_entertainment_server() {
             } else {
                 printf("Entertainment: New client connected!\n");
                 printf("Entertainment: Port: %d", ntohs(client_helper.sin_port));
-                printf("Entertainment: \tFrom: %s\n", inet_ntoa(client_helper.sin_addr));
+                printf("\tFrom: %s\n", inet_ntoa(client_helper.sin_addr));
 
                 if( recv(newsoc, (void*) buf, MAX_LINE, 0) ) {
                     printf("Entertainment: Message received\n");
@@ -286,7 +292,7 @@ int create_confort_server() {
             } else {
                 printf("Confort: New client connected!\n");
                 printf("Confort: Port: %d", ntohs(client_helper.sin_port));
-                printf("Confort: \tFrom: %s\n", inet_ntoa(client_helper.sin_addr));
+                printf("\tFrom: %s\n", inet_ntoa(client_helper.sin_addr));
 
                 if( recv(newsoc, (void*) buf, MAX_LINE, 0) ) {
                     printf("Confort: Message received\n");
