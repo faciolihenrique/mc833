@@ -16,8 +16,8 @@ void update_cars(AdjList* List);
 /* Update the car position based on its speed */
 void update_car_movement(Vehicle* v);
 
-/* Change the speed of v based on the value of acceleration */
-void change_car_speed(Vehicle* v, int acceleration);
+/* Change the speed of v based on the value received */
+void change_car_speed(Vehicle* v, int speed);
 
 /* Update and returns a matrix representing the simulation */
 void update_map(AdjList* List, char matrix[SIZE_MAP][SIZE_MAP]);
