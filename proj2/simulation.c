@@ -21,6 +21,7 @@ extern unsigned long int time_running;
 ////////////////////////////////////////////////////////////////////////////////
 
 void simulate(AdjList* CarList) {
+#ifdef SIMULATE1
     if(time_running == 0){
         addVehicleList(CarList, create_vehicle(1, Car, 1, West));
         addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, North));
@@ -29,6 +30,8 @@ void simulate(AdjList* CarList) {
         //addVehicleList(CarList, create_vehicle(3, DoubleTruck, 3, South));
         //addVehicleList(CarList, create_vehicle(4, DoubleTruck, 3, West));
     }
+#endif
+
 
     update_cars(CarList);
 
@@ -228,10 +231,12 @@ int timeToMove(Vehicle* v) {
 
 void dealSecToServer(Vehicle* v) {
     SecPackageToClient* package = connectToServer(v, Security);
+#ifndef NCURSES_SIMULATE
     printf("Client:\n");
     printf("\tCar:    %d %d\n", v->ID, package->ID);
     printf("\tAction: %d %d\n", None, package->ac);
     printf("\tSpeed:  %d %d\n",v->car_speed, package->car_speed);
+#endif
 
     if (package->ac == Increase || package->ac == Decrease) {
         change_car_speed(v, package->car_speed);
