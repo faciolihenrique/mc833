@@ -10,9 +10,8 @@
 #include "colisions.h"
 
 Action dealWithPackage(AdjList* List, SecPackageToServer* package) {
+    //removeOldPackages();
     if(isInServerCarList(List, package->ID)) {
-        /*Atualizar dados do carro*/
-        //Pensar em como atualizar.
         return Continue;
     }
     else {
@@ -20,9 +19,8 @@ Action dealWithPackage(AdjList* List, SecPackageToServer* package) {
         ServerCar* s;
         s = createNewServerCar(package->ID, package->type, package->length, package->pos, package->dir, package->car_speed, package->time_sent);
         addServerCarList(List, s);
+        return discoverAction(List, s);
     }
-    //Pensar no que retornar.
-    return 0;
 }
 
 ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Direction dir, Speed car_speed, Timestamp time_rec) {
