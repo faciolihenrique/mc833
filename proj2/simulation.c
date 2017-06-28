@@ -18,6 +18,8 @@ char CrossMap[SIZE_MAP][SIZE_MAP];
 
 extern unsigned long int time_running;
 
+////////////////////////////////////////////////////////////////////////////////
+
 void simulate(AdjList* CarList) {
     if(time_running == 0){
         addVehicleList(CarList, create_vehicle(1, Car, 2, North));
@@ -117,9 +119,6 @@ void update_cars(AdjList* List) {
 ////////////////////////////////////////////////////////////////////////////////
 
 void update_car_movement(Vehicle* v) {
-    /*if(v->type == Car) {
-        printf("Antes: x = %d / y = %d\n", v->pos.x, v->pos.y);
-    }*/
     switch (v->dir) {
         case North:
             (v->pos).y -= 1;
@@ -134,9 +133,6 @@ void update_car_movement(Vehicle* v) {
             (v->pos).x += 1;
             break;
     }
-    /*if(v->type == Car) {
-        printf("Depois: x = %d / y = %d\n", v->pos.x, v->pos.y);
-    }*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

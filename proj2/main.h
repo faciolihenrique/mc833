@@ -73,9 +73,10 @@ typedef struct {
     Direction dir;
     Speed car_speed;
     Timestamp time_rec;
-    Timestamp estimated_time_in;
-    Timestamp estimated_time_middle;
-    Timestamp estimated_time_out;
+    Timestamp estimated_time_in1;
+    Timestamp estimated_time_out1;
+    Timestamp estimated_time_in2;
+    Timestamp estimated_time_out2;
     Timestamp destroy;
 } ServerCar;
 

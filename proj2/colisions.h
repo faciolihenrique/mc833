@@ -14,4 +14,6 @@ int thereIsColision(ServerCar* car1, ServerCar* car2);
 
 void removeOldPackages(AdjList* List);
 
+int blocksToCross(Position pos, Direction dir);
+
 #endif

@@ -31,6 +31,7 @@ Action dealWithPackage(AdjList* List, SecPackageToServer* package) {
 
 ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Direction dir, Speed car_speed, Timestamp time_rec) {
     ServerCar* s = calloc(1,sizeof(ServerCar));
+    int number_blocks;
 
     s->ID = ID;
     s->type = type;
@@ -39,10 +40,12 @@ ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Di
     s->dir = dir;
     s->car_speed = car_speed;
     s->time_rec = time_rec;
-    s->estimated_time_in = 0;
-    s->estimated_time_middle = 0;
-    s->estimated_time_out = 0;
-    s->destroy = 0;
+    number_blocks = blocksToCross(pos, dir);
+    s->estimated_time_in1 = time_rec + (number_blocks*SPEED_INTERVAL)/car_speed;
+    s->estimated_time_out1 = time_rec + ((number_blocks+1)*SPEED_INTERVAL)/car_speed;
+    s->estimated_time_in2 = time_rec + ((number_blocks+length)*SPEED_INTERVAL)/car_speed;
+    s->estimated_time_out2 = time_rec + ((number_blocks+length+1)*SPEED_INTERVAL)/car_speed;
+    s->destroy = time_rec + ((number_blocks+(SIZE_MAP/2)+1)*SPEED_INTERVAL)/car_speed;
 
     return s;
 }
@@ -97,11 +100,11 @@ Action discoverAction(AdjList* List, ServerCar* car) {
 int thereIsColision(ServerCar* car1, ServerCar* car2) {
     if(car1->dir == North && car2->dir == East) {
         /* Car 1 exits cross before Car 2 enters it */
-        if(car1->estimated_time_middle < car2->estimated_time_middle) {
+        if(car1->estimated_time_out1 < car2->estimated_time_in2) {
             return 0;
         }
         /* Car 2 exits cross before Car 1 enters it */
-        else if(car2->estimated_time_out < car1->estimated_time_in) {
+        else if(car2->estimated_time_out2 < car1->estimated_time_in1) {
             return 0;
         }
         else{
@@ -110,11 +113,11 @@ int thereIsColision(ServerCar* car1, ServerCar* car2) {
     }
     else if(car1->dir == North && car2->dir == West) {
         /* Car 1 exits cross before Car 2 enters it */
-        if(car1->estimated_time_out < car2->estimated_time_in) {
+        if(car1->estimated_time_out2 < car2->estimated_time_in1) {
             return 0;
         }
         /* Car 2 exits cross before Car 1 enters it */
-        else if(car2->estimated_time_middle < car1->estimated_time_middle) {
+        else if(car2->estimated_time_out1 < car1->estimated_time_in2) {
             return 0;
         }
         else{
@@ -123,11 +126,11 @@ int thereIsColision(ServerCar* car1, ServerCar* car2) {
     }
     else if(car1->dir == South && car2->dir == East) {
         /* Car 1 exits cross before Car 2 enters it */
-        if(car1->estimated_time_out < car2->estimated_time_in) {
+        if(car1->estimated_time_out2 < car2->estimated_time_in1) {
             return 0;
         }
         /* Car 2 exits cross before Car 1 enters it */
-        else if(car2->estimated_time_middle < car1->estimated_time_middle) {
+        else if(car2->estimated_time_out1 < car1->estimated_time_in2) {
             return 0;
         }
         else{
@@ -135,12 +138,12 @@ int thereIsColision(ServerCar* car1, ServerCar* car2) {
         }
     }
     else if(car1->dir == South && car2->dir == West) {
-        /* Car 1 enters and exits cross before Car 2 enters it */
-        if(car1->estimated_time_middle < car2->estimated_time_middle) {
+        /* Car 1 exits cross before Car 2 enters it */
+        if(car1->estimated_time_out1 < car2->estimated_time_in2) {
             return 0;
         }
-        /* Car 2 enters and exits cross before Car 1 enters it */
-        else if(car2->estimated_time_out < car1->estimated_time_in) {
+        /* Car 2 exits cross before Car 1 enters it */
+        else if(car2->estimated_time_out2 < car1->estimated_time_in1) {
             return 0;
         }
         else{
@@ -149,11 +152,11 @@ int thereIsColision(ServerCar* car1, ServerCar* car2) {
     }
     else if(car1->dir == East && car2->dir == North) {
         /* Car 2 exits cross before Car 1 enters it */
-        if(car2->estimated_time_middle < car1->estimated_time_middle) {
+        if(car2->estimated_time_out1 < car1->estimated_time_in2) {
             return 0;
         }
         /* Car 1 exits cross before Car 2 enters it */
-        else if(car1->estimated_time_out < car2->estimated_time_in) {
+        else if(car1->estimated_time_out2 < car2->estimated_time_in1) {
             return 0;
         }
         else{
@@ -162,11 +165,11 @@ int thereIsColision(ServerCar* car1, ServerCar* car2) {
     }
     else if(car1->dir == West && car2->dir == North) {
         /* Car 2 exits cross before Car 1 enters it */
-        if(car2->estimated_time_out < car1->estimated_time_in) {
+        if(car2->estimated_time_out2 < car1->estimated_time_in1) {
             return 0;
         }
         /* Car 1 exits cross before Car 2 enters it */
-        else if(car1->estimated_time_middle < car2->estimated_time_middle) {
+        else if(car1->estimated_time_out1 < car2->estimated_time_in2) {
             return 0;
         }
         else{
@@ -175,11 +178,11 @@ int thereIsColision(ServerCar* car1, ServerCar* car2) {
     }
     else if(car1->dir == East && car2->dir == South) {
         /* Car 2 exits cross before Car 1 enters it */
-        if(car2->estimated_time_out < car1->estimated_time_in) {
+        if(car2->estimated_time_out2 < car1->estimated_time_in1) {
             return 0;
         }
         /* Car 1 exits cross before Car 2 enters it */
-        else if(car1->estimated_time_middle < car2->estimated_time_middle) {
+        else if(car1->estimated_time_out1 < car2->estimated_time_in2) {
             return 0;
         }
         else{
@@ -187,12 +190,12 @@ int thereIsColision(ServerCar* car1, ServerCar* car2) {
         }
     }
     else if(car1->dir == West && car2->dir == South) {
-        /* Car 2 enters and exits cross before Car 1 enters it */
-        if(car2->estimated_time_middle < car1->estimated_time_middle) {
+        /* Car 2 exits cross before Car 1 enters it */
+        if(car2->estimated_time_out1 < car1->estimated_time_in2) {
             return 0;
         }
-        /* Car 1 enters and exits cross before Car 2 enters it */
-        else if(car1->estimated_time_out < car2->estimated_time_in) {
+        /* Car 1 exits cross before Car 2 enters it */
+        else if(car1->estimated_time_out2 < car2->estimated_time_in1) {
             return 0;
         }
         else{
@@ -215,4 +218,25 @@ void removeOldPackages(AdjList* List){
         }
         atual = atual->prox;
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+int blocksToCross(Position pos, Direction dir) {
+    int number_blocks;
+    switch (dir) {
+        case North:
+            number_blocks = pos.y - SIZE_MAP/2;
+            break;
+        case West:
+            number_blocks = pos.x - SIZE_MAP/2;
+            break;
+        case South:
+            number_blocks = (SIZE_MAP/2 - 1) - pos.y;
+            break;
+        case East:
+            number_blocks = (SIZE_MAP/2 - 1) - pos.x;
+            break;
+    }
+    return number_blocks;
 }

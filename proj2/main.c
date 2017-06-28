@@ -15,6 +15,8 @@
 
 unsigned long int time_running = 0;
 
+////////////////////////////////////////////////////////////////////////////////
+
 int main() {
     AdjList* CarList = malloc(sizeof(AdjList));
     CarList->cabeca = NULL;

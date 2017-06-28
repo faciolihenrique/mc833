@@ -46,9 +46,9 @@ int create_confort_server() {
     return 1;
 }
 
-#else
-
 ////////////////////////////////////////////////////////////////////////////////
+
+#else
 
 int create_security_server() {
     struct sockaddr_in socket_address, client_sa, client_helper;
