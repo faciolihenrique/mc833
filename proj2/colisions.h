@@ -16,4 +16,6 @@ void removeOldPackages(AdjList* List);
 
 int blocksToCross(Position pos, Direction dir);
 
+void updateSpeed(Speed newSpeed, ServerCar* car);
+
 #endif
