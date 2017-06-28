@@ -13,7 +13,7 @@ extern unsigned long int time_running;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Action dealWithPackage(AdjList* List, SecPackageToServer* package) {
+Action dealWithPackage(AdjList* List, SecPackageToServer* package, int* speed) {
     removeOldPackages(List);
     if(isInServerCarList(List, package->ID)) {
         return Continue;
@@ -23,7 +23,7 @@ Action dealWithPackage(AdjList* List, SecPackageToServer* package) {
         ServerCar* s;
         s = createNewServerCar(package->ID, package->type, package->length, package->pos, package->dir, package->car_speed, package->time_sent);
         addServerCarList(List, s);
-        return discoverAction(List, s);
+        return discoverAction(List, s, speed);
     }
 }
 
@@ -52,7 +52,7 @@ ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Di
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Action discoverAction(AdjList* List, ServerCar* car) {
+Action discoverAction(AdjList* List, ServerCar* car, int* speed) {
     No *atual = List->cabeca;
     int original_speed = car->car_speed;
     int increase_decrease = 0;
@@ -73,6 +73,8 @@ Action discoverAction(AdjList* List, ServerCar* car) {
         if(thereIsColision(car, (ServerCar*) atual->v) && increase_decrease == 1) {
             cont = 0;
             if(car->car_speed == 1){
+                car->car_speed = original_speed;
+                *speed = original_speed;
                 return Ambulance;
             }
             else {
@@ -83,13 +85,16 @@ Action discoverAction(AdjList* List, ServerCar* car) {
         atual = atual->prox;
     }
     if(cont) {
+        *speed = original_speed;
         return Continue;
     }
     else {
         if(increase_decrease) {
+            *speed = car->car_speed;
             return Decrease;
         }
         else {
+            *speed = car->car_speed;
             return Increase;
         }
     }

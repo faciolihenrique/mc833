@@ -8,6 +8,7 @@
 
 #include "main.h"
 #include "server.h"
+#include "colisions.h"
 
 extern unsigned long int time_running;
 
@@ -51,10 +52,11 @@ int create_confort_server() {
 #else
 
 int create_security_server() {
+    AdjList* EnabledCars = calloc(1, sizeof(AdjList));
     struct sockaddr_in socket_address, client_sa, client_helper;
     char* buf = calloc(PKG_ENT_SIZE, sizeof(char));
     unsigned int len;
-    int s, port, b, l, newsoc;
+    int s, port, b, l, newsoc, speed;
 
     port = SEC_PORT;
     printf("Starting Security Server on %d\n", port);
@@ -128,11 +130,12 @@ int create_security_server() {
 #else
                 recv(newsoc, (void*) buf, sizeof(SecPackageToServer), 0);
 #endif
+                /* Creates the package to send based on what it has returned */
                 SecPackageToClient* rsp = calloc(1, sizeof(SecPackageToClient));
 
                 rsp->ID = ((SecPackageToServer*) buf)->ID;
-                rsp->ac = Continue;
-                rsp->car_speed = ((SecPackageToServer*) buf)->car_speed;
+                rsp->ac = dealWithPackage(EnabledCars, (SecPackageToServer*) buf, &speed); /* Makes the analyses of the package received */
+                rsp->car_speed = speed;
 
                 send(newsoc, (const void*) rsp, sizeof(SecPackageToServer), 0);
             }
