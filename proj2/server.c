@@ -14,27 +14,22 @@ extern unsigned long int time_running;
 ////////////////////////////////////////////////////////////////////////////////
 
 void create_router() {
-    /*if(fork()){
-        // This is the main Process
-        // Father of all xD - it will keep the execution
+    if (fork()) {
+
     } else {
-        if(fork()){
-            create_security_server();
-        } else {
+        if (fork()) {
             if (fork()) {
-                create_entertainment_server();
+                create_security_server();
+                printf("Saiu Seguranca\n");
             } else {
-                if (fork()) {
-                    create_confort_server();
-                } else {
-                    while(1);
-                }
+                create_entertainment_server();
+                printf("Saiu Entreterimento\n");
             }
+        } else {
+            create_confort_server();
+            printf("Saiu Conforto\n");
         }
-    }*/
-    create_security_server();
-    create_entertainment_server();
-    create_confort_server();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +68,7 @@ int create_security_server() {
     s = socket(AF_INET, SOCK_STREAM, 0);
     if ( s < 0 ) {
         printf("Security: Problem occurred when creating a socket\n");
-        return -2;
+        exit(0);
     }
 
     /* Criação da estrutura de dados de endereço */
@@ -86,14 +81,14 @@ int create_security_server() {
     b = bind(s, (struct sockaddr *) &socket_address, sizeof(socket_address));
     if (b < 0) {
         printf("Security: Problem occurred when binding a socket\n");
-        return -3;
+        exit(0);
     }
 
     /* Criar escuta do socket para aceitar conexões */
     l = listen(s, MAX_PENDING);
     if (l < 0) {
         printf("Security: Problem accepting conections (listening)\n");
-        return -3;
+        exit(0);
     }
 
     /* Aguarda/aceita conexão */
@@ -167,7 +162,7 @@ int create_entertainment_server() {
     s = socket(AF_INET, SOCK_STREAM, 0);
     if ( s < 0 ) {
         printf("Entertainment: Problem occurred when creating a socket\n");
-        return -2;
+        exit(0);
     }
 
     /* Criação da estrutura de dados de endereço */
@@ -180,14 +175,14 @@ int create_entertainment_server() {
     b = bind(s, (struct sockaddr *) &socket_address, sizeof(socket_address));
     if (b < 0) {
         printf("Entertainment: Problem occurred when binding a socket\n");
-        return -3;
+        exit(0);
     }
 
     /* Criar escuta do socket para aceitar conexões */
     l = listen(s, MAX_PENDING);
     if (l < 0) {
         printf("Entertainment: Problem accepting conections (listening)\n");
-        return -3;
+        exit(0);
     }
 
     /* Aguarda/aceita conexão */
@@ -252,7 +247,7 @@ int create_confort_server() {
     s = socket(AF_INET, SOCK_STREAM, 0);
     if ( s < 0 ) {
         printf("Confort: Problem occurred when creating a socket\n");
-        return -2;
+        exit(0);
     }
 
     /* Criação da estrutura de dados de endereço */
@@ -265,20 +260,20 @@ int create_confort_server() {
     b = bind(s, (struct sockaddr *) &socket_address, sizeof(socket_address));
     if (b < 0) {
         printf("Confort: Problem occurred when binding a socket\n");
-        return -3;
+        exit(0);
     }
 
     /* Criar escuta do socket para aceitar conexões */
     l = listen(s, MAX_PENDING);
     if (l < 0) {
         printf("Confort: Problem accepting conections (listening)\n");
-        return -3;
+        exit(0);
     }
 
     /* Aguarda/aceita conexão */
     len = sizeof(client_sa);
 
-    while(1){
+    while(1) {
         newsoc = accept(s, (struct sockaddr *) &client_sa, &len);
 
         if(newsoc < 0){
