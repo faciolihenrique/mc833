@@ -14,7 +14,7 @@ extern unsigned long int time_running;
 ////////////////////////////////////////////////////////////////////////////////
 
 void create_router() {
-    if(fork()){
+    /*if(fork()){
         // This is the main Process
         // Father of all xD - it will keep the execution
     } else {
@@ -31,7 +31,10 @@ void create_router() {
                 }
             }
         }
-    }
+    }*/
+    create_security_server();
+    create_entertainment_server();
+    create_confort_server();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

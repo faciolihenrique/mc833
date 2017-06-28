@@ -20,8 +20,8 @@ extern unsigned long int time_running;
 
 void simulate(AdjList* CarList) {
     if(time_running == 0){
-        addVehicleList(CarList, create_vehicle(1, Car, 2, East));
-        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 2, North));
+        addVehicleList(CarList, create_vehicle(1, Car, 2, North));
+        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 2, East));
         addVehicleList(CarList, create_vehicle(3, Truck, 3, South));
         addVehicleList(CarList, create_vehicle(4, Truck, 1, West));
     }
@@ -95,6 +95,7 @@ void update_cars(AdjList* List) {
 
     atual = List->cabeca;
     while(atual != NULL) {
+        proxNo = atual->prox;
         if (timeToMove((Vehicle*) atual->v)) {
             flag = 0;
             update_car_movement((Vehicle*) atual->v);
@@ -109,7 +110,6 @@ void update_cars(AdjList* List) {
         if (flag == 0 && timeToSendPackage((Vehicle*) atual->v)) {
             dealSecToServer((Vehicle*) atual->v);
         }
-        proxNo = atual->prox;
         atual = proxNo;
     }
 }
@@ -117,6 +117,9 @@ void update_cars(AdjList* List) {
 ////////////////////////////////////////////////////////////////////////////////
 
 void update_car_movement(Vehicle* v) {
+    /*if(v->type == Car) {
+        printf("Antes: x = %d / y = %d\n", v->pos.x, v->pos.y);
+    }*/
     switch (v->dir) {
         case North:
             (v->pos).y -= 1;
@@ -131,6 +134,9 @@ void update_car_movement(Vehicle* v) {
             (v->pos).x += 1;
             break;
     }
+    /*if(v->type == Car) {
+        printf("Depois: x = %d / y = %d\n", v->pos.x, v->pos.y);
+    }*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
