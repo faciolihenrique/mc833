@@ -20,10 +20,10 @@ extern unsigned long int time_running;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void simulate(AdjList* CarList) {
+int simulate(AdjList* CarList) {
 #ifdef SIMULATE1
     if(time_running == 0){
-        addVehicleList(CarList, create_vehicle(1, Car, 1, West));
+        addVehicleList(CarList, create_vehicle(1, Car, 3, West));
         addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, North));
         addVehicleList(CarList, create_vehicle(3, DoubleTruck, 1, East));
         //addVehicleList(CarList, create_vehicle(2, DoubleTruck, 3, East));
@@ -38,15 +38,13 @@ void simulate(AdjList* CarList) {
 #ifdef NCURSES_SIMULATE
     update_map(CarList, CrossMap);
     printMap(CrossMap);
-    if(isEmpty(CarList)){
-        endwin();
-    }
 #endif
 
     ++time_running;
     if(isEmpty(CarList)){
-        exit(0);
+        return 0;
     }
+    return 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

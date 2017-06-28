@@ -5,7 +5,7 @@
 #include "linked_list.h"
 
 /* Functions to the simulation */
-void simulate(AdjList* CarList);
+int simulate(AdjList* CarList);
 
 /* Create a new vehicle */
 Vehicle* create_vehicle(int ID, CarType type, Speed car_speed, Direction dir);

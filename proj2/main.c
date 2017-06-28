@@ -7,6 +7,8 @@
  */
 
 #include <time.h>
+#include <sys/types.h>
+#include <signal.h>
 
 #include "main.h"
 #include "server.h"
@@ -29,11 +31,13 @@ int main() {
     create_router();    //  Inicializa o roteador (criando um servidor de security, media, confort)
 
 #ifdef NCURSES_SIMULATE
-    initscr();			                          /* Start curses mode        */
+    initscr();			                          /* Start curses mode */
 #endif
-    while(1){
+    while(simulate(CarList)){
         nanosleep(&ts, NULL);
-        simulate(CarList);
     }
+#ifdef NCURSES_SIMULATE
+    endwin();
+#endif
     return 0;
 }

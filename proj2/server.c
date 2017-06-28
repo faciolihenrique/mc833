@@ -6,6 +6,9 @@
  * Thiago Silva de Farias - 148077
  */
 
+#include <sys/prctl.h>
+#include <signal.h>
+
 #include "main.h"
 #include "server.h"
 #include "colisions.h"
@@ -15,20 +18,20 @@ extern unsigned long int time_running;
 ////////////////////////////////////////////////////////////////////////////////
 
 void create_router() {
-    if (fork()) {
-
+    if (fork() == 0) {
+        prctl(PR_SET_PDEATHSIG, SIGKILL);
+        create_security_server();
     } else {
-        if (fork()) {
-            if (fork()) {
-                create_security_server();
-                printf("Saiu Seguranca\n");
-            } else {
-                create_entertainment_server();
-                printf("Saiu Entreterimento\n");
-            }
+        if (fork() == 0) {
+            prctl(PR_SET_PDEATHSIG, SIGKILL);
+            create_entertainment_server();
         } else {
-            create_confort_server();
-            printf("Saiu Conforto\n");
+            if (fork() == 0) {
+                prctl(PR_SET_PDEATHSIG, SIGKILL);
+                create_confort_server();
+            } else {
+                /* O pai vai embora */
+            }
         }
     }
 }
@@ -53,7 +56,7 @@ int create_confort_server() {
 
 int create_security_server() {
     AdjList* EnabledCars = calloc(1, sizeof(AdjList));
-    struct sockaddr_in socket_address, client_sa, client_helper;
+    struct sockaddr_in socket_address, client_sa;
     char* buf = calloc(PKG_ENT_SIZE, sizeof(char));
     unsigned int len;
     int s, port, b, l, newsoc, speed;
@@ -107,7 +110,6 @@ int create_security_server() {
 
         if( recv(newsoc, (void*) buf, sizeof(SecPackageToServer), 0) ) {
             printf("Security: Message received");
-            printf("\tPort: %d", ntohs(client_helper.sin_port));
             printf("\tFrom: %d\n", ((SecPackageToServer*) buf)->ID);
         }
 #else
@@ -132,6 +134,7 @@ int create_security_server() {
 ////////////////////////////////////////////////////////////////////////////////
 
 int create_entertainment_server() {
+
     struct sockaddr_in socket_address, client_sa, client_helper;
     char buf[MAX_LINE];
     unsigned int len;
@@ -217,6 +220,7 @@ int create_entertainment_server() {
 ////////////////////////////////////////////////////////////////////////////////
 
 int create_confort_server() {
+
     struct sockaddr_in socket_address, client_sa, client_helper;
     char buf[MAX_LINE];
     unsigned int len;
