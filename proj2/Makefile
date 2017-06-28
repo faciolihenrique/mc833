@@ -2,7 +2,7 @@
 # Car Simulation
 # ####################################################
 CC = gcc
-CFLAGS = -Wall -std=c11 -lncurses
+CFLAGS = -Wall -std=gnu99 -lncurses
 
 TARGET = simulation.out
 INC_DIR := -I.
