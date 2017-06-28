@@ -6,19 +6,27 @@
  * Thiago Silva de Farias - 148077
  */
 
+#include <omp.h>
+
 #include "main.h"
 #include "colisions.h"
 
 extern unsigned long int time_running;
 
+int using = 0;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Action dealWithPackage(AdjList* List, SecPackageToServer* package, int* speed) {
-    removeOldPackages(List);
+    //removeOldPackages(List);
+    printf("dealWithPackage\n\tspeed:%d\n\tdir:%d\n\tID:%d\n\tlenght:%d\n\ttime_sent:%ld\n\ttype:%d", package->car_speed, package->dir, package->ID, package->length, package->time_sent, package->type);
+
     if(isInServerCarList(List, package->ID)) {
+        printf("Estou achando esse id na lista\n");
         return Continue;
     }
     else {
+        printf("Não estou achando esse id na lista\n");
         /*Criamos um novo carro para o servidor e o adicionamos a lista */
         ServerCar* s;
         s = createNewServerCar(package->ID, package->type, package->length, package->pos, package->dir, package->car_speed, package->time_sent);

@@ -22,10 +22,10 @@ extern unsigned long int time_running;
 
 void simulate(AdjList* CarList) {
     if(time_running == 0){
-        addVehicleList(CarList, create_vehicle(1, Car, 2, North));
-        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 2, East));
-        addVehicleList(CarList, create_vehicle(3, Truck, 3, South));
-        addVehicleList(CarList, create_vehicle(4, Truck, 1, West));
+        addVehicleList(CarList, create_vehicle(1, DoubleTruck, 3, North));
+        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 3, East));
+        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 3, South));
+        addVehicleList(CarList, create_vehicle(4, DoubleTruck, 3, West));
     }
 
     update_cars(CarList);
@@ -227,6 +227,10 @@ int timeToMove(Vehicle* v) {
 void dealSecToServer(Vehicle* v) {
     SecPackageToClient* package = connectToServer(v, Security);
 
+    printf("Car:    %d %d\n", v->ID, package->ID);
+    printf("Action: %d %d\n", None, package->ac);
+    printf("Speed:  %d %d\n",v->car_speed, package->car_speed);
+
     if (package->ac == Increase) {
         change_car_speed(v, package->car_speed);
     } else if (package->ac == Decrease) {
@@ -317,6 +321,8 @@ void* connectToServer(Vehicle* v, ConectionType contype) {
         pkg->dir       = v->dir;
         pkg->ID        = v->ID;
         pkg->pos       = v->pos;
+        pkg->length    = v->length;
+        pkg->type      = v->type;
         pkg->time_sent = time_running;
 
         if (send(s, (const void*) pkg, sizeof(SecPackageToServer), 0) < 0) {

@@ -132,7 +132,6 @@ int create_security_server() {
 #endif
                 /* Creates the package to send based on what it has returned */
                 SecPackageToClient* rsp = calloc(1, sizeof(SecPackageToClient));
-
                 rsp->ID = ((SecPackageToServer*) buf)->ID;
                 rsp->ac = dealWithPackage(EnabledCars, (SecPackageToServer*) buf, &speed); /* Makes the analyses of the package received */
                 rsp->car_speed = speed;
