@@ -105,12 +105,13 @@ int create_security_server() {
          /* Makes the analyses of the package received */
         rsp->ac = dealWithPackage(EnabledCars, (SecPackageToServer*) buf, &speed);
         rsp->car_speed = speed;
-
+#ifdef DELAY
         struct timespec* ts = calloc(1, sizeof(struct timespec));
         ts->tv_sec = DELAY_SEC / 1000;
         ts->tv_nsec = (DELAY_SEC % 1000) * 1000000;
         nanosleep(ts, NULL);
         free(ts);
+#endif
 
         send(newsoc, (const void*) rsp, sizeof(SecPackageToClient), 0);
 
@@ -170,12 +171,13 @@ int create_security_server() {
             rsp->car_speed = speed;
         }
 
+#ifdef DELAY
         struct timespec* ts = calloc(1, sizeof(struct timespec));
         ts->tv_sec = DELAY_CON / 1000;
         ts->tv_nsec = (DELAY_CON % 1000) * 1000000;
         nanosleep(ts, NULL);
         free(ts);
-
+#endif
         len = sendto(s, rsp, sizeof(SecPackageToClient), 0, (struct sockaddr *) &client_sa, cl_size);
         if (len < 0) {
             printf("Security: Problem occurred in sendto\n");
@@ -195,7 +197,7 @@ int create_security_server() {
 
 int create_entertainment_server() {
     struct sockaddr_in socket_address, client_sa, client_helper;
-    char buf[MAX_LINE];
+    char buf[PKG_ENT_SIZE];
     unsigned int len;
     int s, port, b, l, newsoc;
 
@@ -260,13 +262,15 @@ int create_entertainment_server() {
                 recv(newsoc, (void*) buf, sizeof(SecPackageToServer), 0);
 #endif
 
+#ifdef DELAY
                 struct timespec* ts = calloc(1, sizeof(struct timespec));
                 ts->tv_sec = DELAY_ENT / 1000;
                 ts->tv_nsec = (DELAY_ENT % 1000) * 1000000;
                 nanosleep(ts, NULL);
                 free(ts);
+#endif
 
-                char* pkg = calloc(PKG_CON_SIZE, sizeof(char));
+                char* pkg = calloc(PKG_ENT_SIZE, sizeof(char));
                 strcpy(pkg, "ARE YOU NOT ENTERTAINED?\0");
 
                 send(newsoc, (const void*) pkg, strlen(pkg)+1, 0);
@@ -316,16 +320,17 @@ int create_entertainment_server() {
             printf("Entertainment: Problem occurred in recvfrom\n");
         }
 
-        char* pkg = calloc(PKG_CON_SIZE, sizeof(char));
+        char* pkg = calloc(PKG_ENT_SIZE, sizeof(char));
         strcpy(pkg, "ARE YOU NOT ENTERTAINED?\0");
 
+#ifdef DELAY
         struct timespec* ts = calloc(1, sizeof(struct timespec));
         ts->tv_sec = DELAY_ENT / 1000;
         ts->tv_nsec = (DELAY_ENT % 1000) * 1000000;
         nanosleep(ts, NULL);
         free(ts);
-
-        len = sendto(s, pkg, strlen(pkg)+1, 0, (struct sockaddr *) &client_sa, cl_size);
+#endif
+        len = sendto(s, pkg, PKG_ENT_SIZE, 0, (struct sockaddr *) &client_sa, cl_size);
         if (len < 0) {
             printf("Entertainment: Problem occurred in sendto\n");
         }
@@ -344,19 +349,13 @@ int create_entertainment_server() {
 int create_confort_server() {
 
     struct sockaddr_in socket_address, client_sa, client_helper;
-    char buf[MAX_LINE];
+    char buf[PKG_CON_SIZE];
     unsigned int len;
     int s, port, b, l, newsoc;
 
     port = CON_PORT;
     printf("Starting TCP Confort Server on %d\n", port);
 
-    /* Create a socket and check if its Ok
-     * returns -1 if occurred an error
-     * AF_INET = IPv4
-     * SOCK_STREAM = TCP
-     * 0 = Default
-     */
     s = socket(AF_INET, SOCK_STREAM, 0);
     if ( s < 0 ) {
         printf("Confort: Problem occurred when creating a socket\n");
@@ -417,11 +416,13 @@ int create_confort_server() {
                 char* pkg = calloc(PKG_CON_SIZE, sizeof(char));
                 strcpy(pkg, "I WILL LOOK FOR YOU, I WILL FIND YOU AND I WILL... COMFORT YOU.\0");
 
+#ifdef DELAY
                 struct timespec* ts = calloc(1, sizeof(struct timespec));
                 ts->tv_sec = DELAY_CON / 1000;
                 ts->tv_nsec = (DELAY_CON % 1000) * 1000000;
                 nanosleep(ts, NULL);
                 free(ts);
+#endif
 
                 send(newsoc, (const void*) pkg, strlen(pkg)+1, 0);
                 free(pkg);
@@ -473,13 +474,15 @@ int create_confort_server() {
         char* pkg = calloc(PKG_CON_SIZE, sizeof(char));
         strcpy(pkg, "I WILL LOOK FOR YOU, I WILL FIND YOU AND I WILL... COMFORT YOU.\0");
 
+#ifdef DELAY
         struct timespec* ts = calloc(1, sizeof(struct timespec));
         ts->tv_sec = DELAY_CON / 1000;
         ts->tv_nsec = (DELAY_CON % 1000) * 1000000;
         nanosleep(ts, NULL);
         free(ts);
+#endif
 
-        len = sendto(s, pkg, strlen(pkg)+1, 0, (struct sockaddr *) &client_sa, cl_size);
+        len = sendto(s, pkg, PKG_CON_SIZE, 0, (struct sockaddr *) &client_sa, cl_size);
         if (len < 0) {
             printf("Confort: Problem occurred in sendto\n");
         }

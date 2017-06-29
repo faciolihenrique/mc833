@@ -25,6 +25,14 @@ int simulate(AdjList* CarList) {
     if (time_running == 0) {
         addVehicleList(CarList, create_vehicle(1, Car, 1, North));
         addVehicleList(CarList, create_vehicle(2, Car, 1, West));
+        addVehicleList(CarList, create_vehicle(3, Car, 1, South));
+        addVehicleList(CarList, create_vehicle(4, Car, 1, East));
+    }
+#endif
+#ifdef SIMULATE2
+    if (time_running == 0) {
+        addVehicleList(CarList, create_vehicle(1, Car, 1, North));
+        addVehicleList(CarList, create_vehicle(2, Car, 1, West));
         addVehicleList(CarList, create_vehicle(3, Car, 1, East));
         addVehicleList(CarList, create_vehicle(4, Car, 1, South));
         addVehicleList(CarList, create_vehicle(5, DoubleTruck, 3, South));
@@ -40,6 +48,7 @@ int simulate(AdjList* CarList) {
         addVehicleList(CarList, create_vehicle(61, DoubleTruck, 3, West));
     }
 #endif
+
 
     update_cars(CarList);
 
