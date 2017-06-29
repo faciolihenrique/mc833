@@ -114,6 +114,8 @@ void update_cars(AdjList* List) {
         }
         if (flag == 0 && timeToSendPackage((Vehicle*) atual->v)) {
             dealSecToServer((Vehicle*) atual->v);
+            dealEntToServer((Vehicle*) atual->v);
+            dealConToServer((Vehicle*) atual->v);
         }
         atual = proxNo;
     }
@@ -235,7 +237,7 @@ void dealSecToServer(Vehicle* v) {
 #endif
 
 #ifndef NCURSES_SIMULATE
-    printf("Client:\n");
+    printf("Security Client:\n");
     printf("\tCar:    %d %d\n", v->ID, package->ID);
     printf("\tAction: %d %d\n", None, package->ac);
     printf("\tSpeed:  %d %d\n",v->car_speed, package->car_speed);
@@ -247,18 +249,41 @@ void dealSecToServer(Vehicle* v) {
         printf("CHAMA AMBULANCIA FIAOO\n");
         printf("IÓÓÓÓN I\n");
     }
+    free(package);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 void dealEntToServer(Vehicle* v) {
+#ifdef ENT_TCP
+    char* pkg = connectToTCPServer(v, Entertainment);
+#else
+    char* pkg = connectToUDPServer(v, Entertainment);
+#endif
 
+#ifndef NCURSES_SIMULATE
+    printf("Entertainment Client:\n");
+    printf("\tCar:    %d\n", v->ID);
+    printf("\tMessage Received: %s\n", pkg);
+#endif
+    free(pkg);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 void dealConToServer(Vehicle* v) {
+#ifdef CON_TCP
+    char* pkg = connectToTCPServer(v, Confort);
+#else
+    char* pkg = connectToUDPServer(v, Confort);
+#endif
 
+#ifndef NCURSES_SIMULATE
+    printf("Confort Client:\n");
+    printf("\tCar:    %d\n", v->ID);
+    printf("\tMessage Received: %s\n", pkg);
+#endif
+    free(pkg);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -426,7 +451,7 @@ void* connectToUDPServer(Vehicle* v, ConectionType contype) {
     } else if (contype == Confort) {
         char pkg[PKG_CON_SIZE] = "\0";
 
-        if (sendto(s, (const void*) pkg, PKG_ENT_SIZE, 0, (const struct sockaddr*) &socket_address, len) < 0) {
+        if (sendto(s, (const void*) pkg, PKG_CON_SIZE, 0, (const struct sockaddr*) &socket_address, len) < 0) {
             printf("Problem sending message\n");
             return NULL;
         }

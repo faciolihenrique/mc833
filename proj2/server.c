@@ -82,7 +82,7 @@ int create_security_server() {
     while(1){
         /* receber e imprimir texto na tela, enviar eco  */
         if(newsoc < 0){
-            printf("Problem on creaing a new connection\n");
+            printf("Security: Problem on creaing a new connection\n");
         }
 #ifndef NCURSES_SIMULATE
         if( recv(newsoc, (void*) buf, sizeof(SecPackageToServer), 0) ) {
@@ -99,19 +99,21 @@ int create_security_server() {
         rsp->ac = dealWithPackage(EnabledCars, (SecPackageToServer*) buf, &speed); /* Makes the analyses of the package received */
         rsp->car_speed = speed;
 
+        //////// COLOCAR DELAY TCP
+
         send(newsoc, (const void*) rsp, sizeof(SecPackageToClient), 0);
 
         newsoc = accept(s, (struct sockaddr *) &client_sa, &len);
     }
 
-    printf("Finishing Server\n");
+    printf("Finishing Security Server\n");
     return 0;
 }
 
 #else
 
 int create_security_server() {
-    printf("This is a UDP server\n");
+    printf("This is a UDP Security Server\n");
     AdjList* EnabledCars = calloc(1, sizeof(AdjList));
     struct sockaddr_in so_server, client_sa;
     char buf[MAX_LINE];
@@ -122,7 +124,7 @@ int create_security_server() {
 
     s = socket(AF_INET, SOCK_DGRAM, 0);
     if ( s < 0 ) {
-        printf("Problem occurred when creating a socket\n");
+        printf("Security: Problem occurred when creating a socket\n");
         exit(0);
     }
 
@@ -135,7 +137,7 @@ int create_security_server() {
     /* Associar socket ao descritor */
     b = bind(s, (struct sockaddr *) &so_server, sizeof(so_server));
     if (b < 0) {
-        printf("Problem occurred when binding a socket\n");
+        printf("Security: Problem occurred when binding a socket\n");
         exit(0);
     }
 
@@ -146,10 +148,10 @@ int create_security_server() {
         len = 0;
         len = recvfrom(s, buf, sizeof(SecPackageToServer), 0, (struct sockaddr *) &client_sa, (socklen_t *)&cl_size);
         if (len < 0) {
-            printf("Problem occurred in recvfrom\n");
+            printf("Security: Problem occurred in recvfrom\n");
         } else if (len > 0) {
 #ifndef NCURSES_SIMULATE
-            printf("Security: Message received");
+            printf("Security: Package received");
             printf("\tFrom: %d\n", ((SecPackageToServer*) buf)->ID);
 #endif
             /* Creates the package to send based on what it has returned */
@@ -158,12 +160,14 @@ int create_security_server() {
             rsp->car_speed = speed;
         }
 
+        //////// COLOCAR DELAY UDP
+
         len = sendto(s, rsp, sizeof(SecPackageToClient), 0, (struct sockaddr *) &client_sa, cl_size);
         if (len < 0) {
-            printf("Problem occurred in sendto\n");
+            printf("Security: Problem occurred in sendto\n");
         }
     }
-    printf("Finishing Server\n");
+    printf("Finishing Security Server\n");
 
     return 0;
     exit(0);
@@ -174,8 +178,8 @@ int create_security_server() {
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifdef ENT_TCP
-int create_entertainment_server() {
 
+int create_entertainment_server() {
     struct sockaddr_in socket_address, client_sa, client_helper;
     char buf[MAX_LINE];
     unsigned int len;
@@ -251,16 +255,71 @@ int create_entertainment_server() {
                     printf("Entertainment: Message:\n %s\n", buf);
                 }
 
-                //////// COLOCAR DELAY
+                //////// COLOCAR DELAY TCP
 
                 send(newsoc, (const void*) buf, strlen(buf) + 1, 0);
             }
         }
     }
-    printf("Finishing Server\n");
+    printf("Finishing Entertainment Server\n");
     return 0;
 }
 #else
+
+int create_entertainment_server() {
+    printf("This is a UDP Entertainment Server\n");
+    struct sockaddr_in so_server, client_sa;
+    char* buf = calloc(PKG_ENT_SIZE, sizeof(char));
+    int s, port, b, len, cl_size;
+
+    port = ENT_PORT;
+    printf("Starting Entertainment Server on %d\n", port);
+
+    s = socket(AF_INET, SOCK_DGRAM, 0);
+    if ( s < 0 ) {
+        printf("Entertainment: Problem occurred when creating a socket\n");
+        exit(0);
+    }
+
+    /* Criação da estrutura de dados de endereço */
+    bzero((char *)&so_server, sizeof(so_server));
+    so_server.sin_family = AF_INET;
+    so_server.sin_port = htons(port);
+    so_server.sin_addr.s_addr = INADDR_ANY;
+
+    /* Associar socket ao descritor */
+    b = bind(s, (struct sockaddr *) &so_server, sizeof(so_server));
+    if (b < 0) {
+        printf("Entertainment: Problem occurred when binding a socket\n");
+        exit(0);
+    }
+
+    /* Aguarda/aceita conexão */
+    cl_size = sizeof(client_sa);
+    while(1){
+        len = 0;
+        len = recvfrom(s, buf, PKG_ENT_SIZE, 0, (struct sockaddr *) &client_sa, (socklen_t *)&cl_size);
+        if (len < 0) {
+            printf("Entertainment: Problem occurred in recvfrom\n");
+        } else if (len > 0) {
+#ifndef NCURSES_SIMULATE
+            printf("Entertainment: Package received");
+#endif
+        }
+        char* pkg = "ARE YOU NOT ENTERTAINED?\0";
+
+        //////// COLOCAR DELAY UDP
+
+        len = sendto(s, pkg, PKG_ENT_SIZE, 0, (struct sockaddr *) &client_sa, cl_size);
+        if (len < 0) {
+            printf("Entertainment: Problem occurred in sendto\n");
+        }
+    }
+    printf("Finishing Entertainment Server\n");
+
+    return 0;
+    exit(0);
+}
 
 #endif
 
@@ -345,16 +404,71 @@ int create_confort_server() {
                 }
 
 
-                //////// COLOCAR DELAY
+                //////// COLOCAR DELAY TCP
 
 
                 send(newsoc, (const void*) buf, strlen(buf) + 1, 0);
             }
         }
     }
-    printf("Finishing Server\n");
+    printf("Finishing Confort Server\n");
     return 0;
 }
 #else
+
+int create_confort_server() {
+    printf("This is a UDP Confort Server\n");
+    struct sockaddr_in so_server, client_sa;
+    char* buf = calloc(PKG_CON_SIZE, sizeof(char));
+    int s, port, b, len, cl_size;
+
+    port = CON_PORT;
+    printf("Starting Confort Server on %d\n", port);
+
+    s = socket(AF_INET, SOCK_DGRAM, 0);
+    if ( s < 0 ) {
+        printf("Confort: Problem occurred when creating a socket\n");
+        exit(0);
+    }
+
+    /* Criação da estrutura de dados de endereço */
+    bzero((char *)&so_server, sizeof(so_server));
+    so_server.sin_family = AF_INET;
+    so_server.sin_port = htons(port);
+    so_server.sin_addr.s_addr = INADDR_ANY;
+
+    /* Associar socket ao descritor */
+    b = bind(s, (struct sockaddr *) &so_server, sizeof(so_server));
+    if (b < 0) {
+        printf("Confort: Problem occurred when binding a socket\n");
+        exit(0);
+    }
+
+    /* Aguarda/aceita conexão */
+    cl_size = sizeof(client_sa);
+    while(1){
+        len = 0;
+        len = recvfrom(s, buf, PKG_CON_SIZE, 0, (struct sockaddr *) &client_sa, (socklen_t *)&cl_size);
+        if (len < 0) {
+            printf("Confort: Problem occurred in recvfrom\n");
+        } else if (len > 0) {
+#ifndef NCURSES_SIMULATE
+            printf("Confort: Package received");
+#endif
+        }
+        char pkg[PKG_CON_SIZE] = "I WILL LOOK FOR YOU, I WILL FIND YOU AND I WILL... COMFORT YOU.\0";
+
+        //////// COLOCAR DELAY UDP
+
+        len = sendto(s, pkg, PKG_CON_SIZE, 0, (struct sockaddr *) &client_sa, cl_size);
+        if (len < 0) {
+            printf("Confort: Problem occurred in sendto\n");
+        }
+    }
+    printf("Finishing Confort Server\n");
+
+    return 0;
+    exit(0);
+}
 
 #endif
