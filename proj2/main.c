@@ -41,16 +41,19 @@ int main() {
     endwin();
 #endif
 
-    void endProgram();
+    endProgram(CarList);
 
     return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void endProgram(){
+void endProgram(AdjList* List){
     kill(pids[0], SIGKILL);
     kill(pids[1], SIGKILL);
     kill(pids[2], SIGKILL);
+
+    free_list(List);
+
     sleep(1);
 }
