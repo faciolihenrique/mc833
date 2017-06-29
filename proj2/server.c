@@ -135,13 +135,11 @@ int create_security_server() {
         exit(0);
     }
 
-    /* Criação da estrutura de dados de endereço */
     bzero((char *)&so_server, sizeof(so_server));
     so_server.sin_family = AF_INET;
     so_server.sin_port = htons(port);
     so_server.sin_addr.s_addr = INADDR_ANY;
 
-    /* Associar socket ao descritor */
     b = bind(s, (struct sockaddr *) &so_server, sizeof(so_server));
     if (b < 0) {
         printf("Security: Problem occurred when binding a socket\n");

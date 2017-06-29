@@ -124,16 +124,9 @@ void update_cars(AdjList* List) {
             }
         }
         if (flag == 0 && timeToSendPackage((Vehicle*) atual->v)) {
-            ((Vehicle*) atual->v)->symbol = ((Vehicle*) atual->v)->symbol - 32;
-
-#ifdef NCURSES_SIMULATE
-            update_map(List, CrossMap);
-            printMap(CrossMap);
-#endif
             dealSecToServer((Vehicle*) atual->v);
             dealEntToServer((Vehicle*) atual->v);
             dealConToServer((Vehicle*) atual->v);
-            ((Vehicle*) atual->v)->symbol = ((Vehicle*) atual->v)->symbol + 32;
         }
         atual = proxNo;
     }
@@ -265,8 +258,7 @@ void dealSecToServer(Vehicle* v) {
         change_car_speed(v, package->car_speed);
     } else if (package->ac == Ambulance) {
         v->symbol = 'a';
-        printf("CHAMA AMBULANCIA FIAOO\n");
-        printf("IÓÓÓÓN I\n");
+        // Chamar a ambulancia
     }
     free(package);
 }
