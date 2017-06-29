@@ -22,13 +22,22 @@ extern unsigned long int time_running;
 
 int simulate(AdjList* CarList) {
 #ifdef SIMULATE1
-    if(time_running == 0){
+    if (time_running == 0) {
         addVehicleList(CarList, create_vehicle(1, Car, 3, West));
-        //addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, North));
-        //addVehicleList(CarList, create_vehicle(3, DoubleTruck, 1, East));
-        //addVehicleList(CarList, create_vehicle(2, DoubleTruck, 3, East));
-        //addVehicleList(CarList, create_vehicle(3, DoubleTruck, 3, South));
-        //addVehicleList(CarList, create_vehicle(4, DoubleTruck, 3, West));
+        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, North));
+        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 1, East));
+        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 2, East));
+        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 3, South));
+        addVehicleList(CarList, create_vehicle(4, DoubleTruck, 2, West));
+    }
+
+    if (time_running == 50) {
+        addVehicleList(CarList, create_vehicle(1, Car, 3, West));
+        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, North));
+        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 1, East));
+        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 2, East));
+        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 3, South));
+        addVehicleList(CarList, create_vehicle(4, DoubleTruck, 2, West));
     }
 #endif
 
@@ -59,10 +68,13 @@ Vehicle* create_vehicle(int ID, CarType type, Speed car_speed, Direction dir) {
     // Length according to Type.
     if(type == Car) {
         v->length = SIZE_CAR;
+        v->symbol = 'c';
     } else if(type == Truck) {
         v->length = SIZE_TRUCK;
+        v->symbol = 't';
     } else if(type == DoubleTruck){
         v->length = SIZE_DOUBLETRUCK;
+        v->symbol = 'd';
     }
     // Speed.
     if (car_speed >= 1 && car_speed <= MAX_SPEED) {
@@ -113,9 +125,16 @@ void update_cars(AdjList* List) {
             }
         }
         if (flag == 0 && timeToSendPackage((Vehicle*) atual->v)) {
+            ((Vehicle*) atual->v)->symbol = ((Vehicle*) atual->v)->symbol - 32;
+
+#ifdef NCURSES_SIMULATE
+            update_map(List, CrossMap);
+            printMap(CrossMap);
+#endif
             dealSecToServer((Vehicle*) atual->v);
             dealEntToServer((Vehicle*) atual->v);
             dealConToServer((Vehicle*) atual->v);
+            ((Vehicle*) atual->v)->symbol = ((Vehicle*) atual->v)->symbol + 32;
         }
         atual = proxNo;
     }
@@ -173,38 +192,38 @@ void update_map(AdjList* List, char map[SIZE_MAP][SIZE_MAP]) {
 
 void insert_v_in_map(Vehicle* v, char map[SIZE_MAP][SIZE_MAP]) {
     if (v->type == Car) {
-        map[(v->pos).y][(v->pos).x] = 'c';
+        map[(v->pos).y][(v->pos).x] = v->symbol;
     } else if (v->type == Truck) {
         if (v->dir == North) {
-            map[(v->pos).y][(v->pos).x] = 't';
-            map[(v->pos).y+1][(v->pos).x] = 't';
+            map[(v->pos).y][(v->pos).x] = v->symbol;
+            map[(v->pos).y+1][(v->pos).x] = v->symbol;
         } else if (v->dir == West ) {
-            map[(v->pos).y][(v->pos).x] = 't';
-            map[(v->pos).y][(v->pos).x+1] = 't';
+            map[(v->pos).y][(v->pos).x] = v->symbol;
+            map[(v->pos).y][(v->pos).x+1] = v->symbol;
         } else if (v->dir == South) {
-            map[(v->pos).y][(v->pos).x] = 't';
-            map[(v->pos).y-1][(v->pos).x] = 't';
+            map[(v->pos).y][(v->pos).x] = v->symbol;
+            map[(v->pos).y-1][(v->pos).x] = v->symbol;
         } else if (v->dir == East) {
-            map[(v->pos).y][(v->pos).x] = 't';
-            map[(v->pos).y][(v->pos).x-1] = 't';
+            map[(v->pos).y][(v->pos).x] = v->symbol;
+            map[(v->pos).y][(v->pos).x-1] = v->symbol;
         }
     } else if (v->type == DoubleTruck) {
         if (v->dir == North) {
-            map[(v->pos).y][(v->pos).x] = 'd';
-            map[(v->pos).y+1][(v->pos).x] = 'd';
-            map[(v->pos).y+2][(v->pos).x] = 'd';
+            map[(v->pos).y][(v->pos).x] = v->symbol;
+            map[(v->pos).y+1][(v->pos).x] = v->symbol;
+            map[(v->pos).y+2][(v->pos).x] = v->symbol;
         } else if (v->dir == West ) {
-            map[(v->pos).y][(v->pos).x] = 'd';
-            map[(v->pos).y][(v->pos).x+1] = 'd';
-            map[(v->pos).y][(v->pos).x+2] = 'd';
+            map[(v->pos).y][(v->pos).x] = v->symbol;
+            map[(v->pos).y][(v->pos).x+1] = v->symbol;
+            map[(v->pos).y][(v->pos).x+2] = v->symbol;
         } else if (v->dir == South) {
-            map[(v->pos).y][(v->pos).x] = 'd';
-            map[(v->pos).y-1][(v->pos).x] = 'd';
-            map[(v->pos).y-2][(v->pos).x] = 'd';
+            map[(v->pos).y][(v->pos).x] = v->symbol;
+            map[(v->pos).y-1][(v->pos).x] = v->symbol;
+            map[(v->pos).y-2][(v->pos).x] = v->symbol;
         } else if (v->dir == East) {
-            map[(v->pos).y][(v->pos).x] = 'd';
-            map[(v->pos).y][(v->pos).x-1] = 'd';
-            map[(v->pos).y][(v->pos).x-2] = 'd';
+            map[(v->pos).y][(v->pos).x] = v->symbol;
+            map[(v->pos).y][(v->pos).x-1] = v->symbol;
+            map[(v->pos).y][(v->pos).x-2] = v->symbol;
         }
     }
 }
