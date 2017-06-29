@@ -23,24 +23,23 @@ extern unsigned long int time_running;
 int simulate(AdjList* CarList) {
 #ifdef SIMULATE1
     if (time_running == 0) {
-        addVehicleList(CarList, create_vehicle(1, Car, 3, West));
-        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, North));
-        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 1, East));
-        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 2, East));
-        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 3, South));
-        addVehicleList(CarList, create_vehicle(4, DoubleTruck, 2, West));
+        addVehicleList(CarList, create_vehicle(1, Car, 1, North));
+        addVehicleList(CarList, create_vehicle(2, Car, 1, West));
+        addVehicleList(CarList, create_vehicle(3, Car, 1, East));
+        addVehicleList(CarList, create_vehicle(4, Car, 1, South));
+        addVehicleList(CarList, create_vehicle(5, DoubleTruck, 3, South));
+        addVehicleList(CarList, create_vehicle(6, DoubleTruck, 2, West));
     }
 
     if (time_running == 50) {
-        addVehicleList(CarList, create_vehicle(1, Car, 3, West));
-        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 1, North));
-        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 1, East));
-        addVehicleList(CarList, create_vehicle(2, DoubleTruck, 2, East));
-        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 3, South));
-        addVehicleList(CarList, create_vehicle(4, DoubleTruck, 2, West));
+        addVehicleList(CarList, create_vehicle(11, Car, 2, North));
+        addVehicleList(CarList, create_vehicle(21, Car, 2, West));
+        addVehicleList(CarList, create_vehicle(31, Car, 2, East));
+        addVehicleList(CarList, create_vehicle(41, Car, 2, South));
+        addVehicleList(CarList, create_vehicle(51, DoubleTruck, 3, South));
+        addVehicleList(CarList, create_vehicle(61, DoubleTruck, 3, West));
     }
 #endif
-
 
     update_cars(CarList);
 
@@ -265,6 +264,7 @@ void dealSecToServer(Vehicle* v) {
     if (package->ac == Increase || package->ac == Decrease) {
         change_car_speed(v, package->car_speed);
     } else if (package->ac == Ambulance) {
+        v->symbol = 'a';
         printf("CHAMA AMBULANCIA FIAOO\n");
         printf("IÓÓÓÓN I\n");
     }
@@ -343,7 +343,7 @@ void* connectToTCPServer(Vehicle* v, ConectionType contype) {
     socket_address.sin_addr = *(struct in_addr*) host_address->h_addr_list[0];
 
     /* criação de socket ativo*/
-    c = connect(s,(struct sockaddr*) &socket_address, sizeof(struct sockaddr_in));
+    c = connect(s,(struct sockaddr*) &socket_address, sizeof(socket_address));
     if (c < 0) {
         printf("Problem occurred when connecting\n");
         return NULL;
@@ -436,7 +436,7 @@ void* connectToUDPServer(Vehicle* v, ConectionType contype) {
     socket_address.sin_addr = *(struct in_addr*) host_address->h_addr_list[0];
 
     /* criação de socket ativo*/
-    c = connect(s,(struct sockaddr*) &socket_address, sizeof(struct sockaddr_in));
+    c = connect(s,(struct sockaddr*) &socket_address, sizeof(socket_address));
     if (c < 0) {
         printf("Problem occurred when connecting\n");
         return NULL;
