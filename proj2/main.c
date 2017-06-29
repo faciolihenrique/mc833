@@ -16,6 +16,7 @@
 #include "printing.h"
 
 unsigned long int time_running = 0;
+pid_t pids[3];
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -39,5 +40,17 @@ int main() {
 #ifdef NCURSES_SIMULATE
     endwin();
 #endif
+
+    void endProgram();
+
     return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void endProgram(){
+    kill(pids[0], SIGKILL);
+    kill(pids[1], SIGKILL);
+    kill(pids[2], SIGKILL);
+    sleep(1);
 }

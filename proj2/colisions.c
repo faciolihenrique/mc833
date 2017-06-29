@@ -18,22 +18,20 @@ int using = 0;
 Action dealWithPackage(AdjList* List, SecPackageToServer* package, int* speed) {
     removeOldPackages(List);
 #ifndef NCURSES_SIMULATE
-    printf("dealWithPackage\n\tspeed:%d\n\tdir:%d\n\tID:%d\n\tlenght:%d\n\ttime_sent:%ld\n\ttype:%d\n", package->car_speed, package->dir, package->ID, package->length, package->time_sent, package->type);
+    printf("Received a new security package with infos:\n\tspeed:%d\n\tdir:%d\n\tID:%d\n\tlenght:%d\n\ttime_sent:%ld\n\ttype:%d\n",
+            package->car_speed, package->dir, package->ID, package->length,
+            package->time_sent, package->type);
 #endif
     if(isInServerCarList(List, package->ID)) {
-#ifndef NCURSES_SIMULATE
-        printf("Estou achando esse id na lista\n");
-#endif
         *speed = package->car_speed;
         return Continue;
     }
     else {
-#ifndef NCURSES_SIMULATE
-        printf("Não estou achando esse id na lista\n");
-#endif
         /*Criamos um novo carro para o servidor e o adicionamos a lista */
         ServerCar* s;
-        s = createNewServerCar(package->ID, package->type, package->length, package->pos, package->dir, package->car_speed, package->time_sent);
+        s = createNewServerCar(package->ID, package->type, package->length,
+                               package->pos, package->dir, package->car_speed,
+                               package->time_sent);
         addServerCarList(List, s);
         return discoverAction(List, s, speed);
     }
@@ -41,7 +39,9 @@ Action dealWithPackage(AdjList* List, SecPackageToServer* package, int* speed) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Direction dir, Speed car_speed, Timestamp time_rec) {
+ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos,
+                           Direction dir, Speed car_speed, Timestamp time_rec)
+{
     ServerCar* s = calloc(1,sizeof(ServerCar));
     int number_blocks;
 
@@ -59,7 +59,7 @@ ServerCar* createNewServerCar(int ID, CarType type, int length, Position pos, Di
     s->estimated_time_out2 = time_rec + ((number_blocks+length+1)*SPEED_INTERVAL)/car_speed;
     s->destroy = time_rec + ((number_blocks+(SIZE_MAP/2)+1)*SPEED_INTERVAL)/car_speed;
 #ifndef NCURSES_SIMULATE
-    printf("\tin1: %ld\n\tin2: %ld \n\tout1: %ld \n\tout2: %ld\n\tdestroy: %ld\n",s->estimated_time_in1, s->estimated_time_in2, s->estimated_time_out1,s->estimated_time_out2,s->destroy );
+    printf("New car on Server:\n\tin1: %ld\n\tin2: %ld \n\tout1: %ld \n\tout2: %ld\n\tdestroy: %ld\n",s->estimated_time_in1, s->estimated_time_in2, s->estimated_time_out1,s->estimated_time_out2,s->destroy );
 #endif
     return s;
 }
@@ -72,19 +72,16 @@ Action discoverAction(AdjList* List, ServerCar* car, int* speed) {
     int increase_decrease = 0;
     int cont = 1;
 
-#ifndef NCURSES_SIMULATE
-    printf("Descobrindo a Ação!\n");
-#endif
     while(atual != NULL) {
         if (thereIsColision(car, (ServerCar*) atual->v)) {
             if(increase_decrease == 0) {
 #ifndef NCURSES_SIMULATE
-                printf("Detectou colisao, aumentando velocidade de %d\n", car->ID);
+                printf("Detected collision, increasing speed %d\n", car->ID);
 #endif
                 cont = 0;
                 if(car->car_speed == MAX_SPEED){
 #ifndef NCURSES_SIMULATE
-                    printf("Já tentou aumentar ao máximo.\n");
+                    printf("Already tryed increasing at its maximum. Trying to low it.\n");
 #endif
                     increase_decrease = 1;
                     *speed = original_speed;
@@ -95,12 +92,12 @@ Action discoverAction(AdjList* List, ServerCar* car, int* speed) {
                 atual = List->cabeca;
             } else {
 #ifndef NCURSES_SIMULATE
-                printf("Detectou colisao, diminuindo velocidade de %d\n", car->ID);
+                printf("Detected collision. Decreasing speed %d\n", car->ID);
 #endif
                 cont = 0;
                 if(car->car_speed == 1){
 #ifndef NCURSES_SIMULATE
-                    printf("Já tentou diminuir ao minimo.\n");
+                    printf("Already tried to decrease its maximum. \nPlease call an Ambulance.\n");
 #endif
                     car->car_speed = original_speed;
                     *speed = original_speed;
@@ -113,7 +110,7 @@ Action discoverAction(AdjList* List, ServerCar* car, int* speed) {
             }
         } else {
 #ifndef NCURSES_SIMULATE
-            printf("Não há colisão entre %d %d\n", car->ID, ((ServerCar*) atual->v)->ID);
+            printf("No collision between %d %d\n", car->ID, ((ServerCar*) atual->v)->ID);
 #endif
             atual = atual->prox;
         }
@@ -254,7 +251,7 @@ void removeOldPackages(AdjList* List){
     while(atual != NULL) {
         if(((ServerCar*) atual->v)->destroy <= time_running) {
 #ifndef NCURSES_SIMULATE
-            printf("Removendo %d\n\tDestroy: %ld\n\ttime_runnig: %ld\n",((ServerCar*) atual->v)->ID, ((ServerCar*) atual->v)->destroy ,time_running);
+            printf("Removing %d\n\tDestroy: %ld\n\ttime_running: %ld\n",((ServerCar*) atual->v)->ID, ((ServerCar*) atual->v)->destroy ,time_running);
 #endif
             removeServerCarList(List, ((ServerCar*) atual->v)->ID);
         }
@@ -296,7 +293,7 @@ void updateSpeed(Speed newSpeed, ServerCar* car) {
     car->estimated_time_out2 = car->time_rec + ((number_blocks+car->length+1)*SPEED_INTERVAL)/car->car_speed;
     car->destroy = car->time_rec + ((number_blocks+(SIZE_MAP/2)+1)*SPEED_INTERVAL)/car->car_speed;
 #ifndef NCURSES_SIMULATE
-    printf("New timestamps para %d\n", car->ID);
+    printf("New timestamps to %d\n", car->ID);
     printf("\tin1: %ld\n\tin2: %ld \n\tout1: %ld \n\tout2: %ld\n\tdestroy: %ld\n",car->estimated_time_in1, car->estimated_time_in2, car->estimated_time_out1,car->estimated_time_out2 , car->destroy );
 #endif
 }
