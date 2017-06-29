@@ -56,6 +56,7 @@ typedef struct {
 
 /* Vehicle struct */
 typedef struct {
+    char symbol;
     int ID;
     CarType type;
     int length;
@@ -96,5 +97,7 @@ typedef struct {
     Speed car_speed;
     Action ac;
 } SecPackageToClient;
+
+void endProgram();
 
 #endif
