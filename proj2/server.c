@@ -8,6 +8,7 @@
 
 #include <sys/prctl.h>
 #include <signal.h>
+#include <time.h>
 
 #include "main.h"
 #include "server.h"
@@ -105,7 +106,11 @@ int create_security_server() {
         rsp->ac = dealWithPackage(EnabledCars, (SecPackageToServer*) buf, &speed);
         rsp->car_speed = speed;
 
-        //////// COLOCAR DELAY TCP
+        struct timespec* ts = calloc(1, sizeof(struct timespec));
+        ts->tv_sec = DELAY_SEC / 1000;
+        ts->tv_nsec = (DELAY_SEC % 1000) * 1000000;
+        nanosleep(ts, NULL);
+        free(ts);
 
         send(newsoc, (const void*) rsp, sizeof(SecPackageToClient), 0);
 
@@ -165,7 +170,11 @@ int create_security_server() {
             rsp->car_speed = speed;
         }
 
-        //////// COLOCAR DELAY UDP
+        struct timespec* ts = calloc(1, sizeof(struct timespec));
+        ts->tv_sec = DELAY_CON / 1000;
+        ts->tv_nsec = (DELAY_CON % 1000) * 1000000;
+        nanosleep(ts, NULL);
+        free(ts);
 
         len = sendto(s, rsp, sizeof(SecPackageToClient), 0, (struct sockaddr *) &client_sa, cl_size);
         if (len < 0) {
@@ -251,7 +260,11 @@ int create_entertainment_server() {
                 recv(newsoc, (void*) buf, sizeof(SecPackageToServer), 0);
 #endif
 
-                //////// COLOCAR DELAY TCP
+                struct timespec* ts = calloc(1, sizeof(struct timespec));
+                ts->tv_sec = DELAY_ENT / 1000;
+                ts->tv_nsec = (DELAY_ENT % 1000) * 1000000;
+                nanosleep(ts, NULL);
+                free(ts);
 
                 char* pkg = calloc(PKG_CON_SIZE, sizeof(char));
                 strcpy(pkg, "ARE YOU NOT ENTERTAINED?\0");
@@ -306,7 +319,11 @@ int create_entertainment_server() {
         char* pkg = calloc(PKG_CON_SIZE, sizeof(char));
         strcpy(pkg, "ARE YOU NOT ENTERTAINED?\0");
 
-        //////// COLOCAR DELAY UDP
+        struct timespec* ts = calloc(1, sizeof(struct timespec));
+        ts->tv_sec = DELAY_ENT / 1000;
+        ts->tv_nsec = (DELAY_ENT % 1000) * 1000000;
+        nanosleep(ts, NULL);
+        free(ts);
 
         len = sendto(s, pkg, strlen(pkg)+1, 0, (struct sockaddr *) &client_sa, cl_size);
         if (len < 0) {
@@ -400,7 +417,11 @@ int create_confort_server() {
                 char* pkg = calloc(PKG_CON_SIZE, sizeof(char));
                 strcpy(pkg, "I WILL LOOK FOR YOU, I WILL FIND YOU AND I WILL... COMFORT YOU.\0");
 
-                //// Delay
+                struct timespec* ts = calloc(1, sizeof(struct timespec));
+                ts->tv_sec = DELAY_CON / 1000;
+                ts->tv_nsec = (DELAY_CON % 1000) * 1000000;
+                nanosleep(ts, NULL);
+                free(ts);
 
                 send(newsoc, (const void*) pkg, strlen(pkg)+1, 0);
                 free(pkg);
@@ -452,7 +473,11 @@ int create_confort_server() {
         char* pkg = calloc(PKG_CON_SIZE, sizeof(char));
         strcpy(pkg, "I WILL LOOK FOR YOU, I WILL FIND YOU AND I WILL... COMFORT YOU.\0");
 
-        //////// COLOCAR DELAY UDP
+        struct timespec* ts = calloc(1, sizeof(struct timespec));
+        ts->tv_sec = DELAY_CON / 1000;
+        ts->tv_nsec = (DELAY_CON % 1000) * 1000000;
+        nanosleep(ts, NULL);
+        free(ts);
 
         len = sendto(s, pkg, strlen(pkg)+1, 0, (struct sockaddr *) &client_sa, cl_size);
         if (len < 0) {
