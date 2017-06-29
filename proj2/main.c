@@ -16,6 +16,8 @@
 #include "printing.h"
 
 unsigned long int time_running = 0;
+unsigned long int ambulances = 0;
+unsigned long int commands = 0;
 pid_t pids[3];
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +41,12 @@ int main() {
     }
 #ifdef NCURSES_SIMULATE
     endwin();
+#else
+    printf("Colisões: %lu\n", ambulances);
+    printf("Comandoes emitidos: %lu\n", commands);
 #endif
+
+
 
     endProgram(CarList);
 

@@ -17,6 +17,8 @@
 char CrossMap[SIZE_MAP][SIZE_MAP];
 
 extern unsigned long int time_running;
+extern unsigned long int ambulances;
+extern unsigned long int commands;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -265,7 +267,9 @@ void dealSecToServer(Vehicle* v) {
 
     if (package->ac == Increase || package->ac == Decrease) {
         change_car_speed(v, package->car_speed);
+        commands++;
     } else if (package->ac == Ambulance) {
+        ambulances++;
         v->symbol = 'a';
         // Chamar a ambulancia
     }
