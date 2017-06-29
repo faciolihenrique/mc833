@@ -13,8 +13,8 @@
 #define SIMULATE1                   // Change to which simulation
 
 //#define DELAY
-#define SIZE_MAP 7                 // Radius of the comunication with the router
-#define MAX_SPEED 3                // Streets max speed
+#define SIZE_MAP 18                 // Radius of the comunication with the router
+#define MAX_SPEED 5                // Streets max speed
 #define N_CONNECTIONS 20            // How many cars can talk to the router
 #define PACKAGE_INTERVAL 25         // Time to send the packages (in ms)
 #define SPEED_INTERVAL 10           // Block_walking = Speed/SPEED_INTERVAL(in ms)
@@ -22,11 +22,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Definitions from server
 
-#define ENT_PORT 42012
-#define SEC_PORT 43012
-#define CON_PORT 44012
+#define ENT_PORT 42009
+#define SEC_PORT 43009
+#define CON_PORT 44009
 
-#define CON_UDP                     // Set to TCP or UDP
+#define CON_TCP                     // Set to TCP or UDP
 #define ENT_TCP                     // Set to TCP or UDP
 #define SEC_TCP                     // Set to TCP or UDP
 
@@ -45,6 +45,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Define if should print the info from the packages or should demonstrate the
 // simulation on NCURSES
-//#define NCURSES_SIMULATE              // Enable this if want to see cars walking
+#define NCURSES_SIMULATE              // Enable this if want to see cars walking
 
 #endif

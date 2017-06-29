@@ -17,7 +17,10 @@
 
 unsigned long int time_running = 0;
 unsigned long int ambulances = 0;
-unsigned long int commands = 0;
+unsigned long int c_continue = 0;
+unsigned long int c_incraese_speed = 0;
+unsigned long int c_decrease_speed = 0;
+
 pid_t pids[3];
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,19 +39,15 @@ int main() {
 #ifdef NCURSES_SIMULATE
     initscr();			                          /* Start curses mode */
 #endif
+
     while(simulate(CarList)){
         nanosleep(&ts, NULL);
     }
-#ifdef NCURSES_SIMULATE
-    endwin();
-#else
-    printf("Colisões: %lu\n", ambulances);
-    printf("Comandoes emitidos: %lu\n", commands);
-#endif
-
-
 
     endProgram(CarList);
+
+    printf("Colisões: %lu\n", ambulances);
+    printf("Comandos emitidos:\n\tContinuar: %lu\n\tAumentar: %lu\n\tDiminuir: %lu\n", c_continue, c_incraese_speed, c_decrease_speed);
 
     return 0;
 }
@@ -56,6 +55,11 @@ int main() {
 ////////////////////////////////////////////////////////////////////////////////
 
 void endProgram(AdjList* List){
+
+#ifdef NCURSES_SIMULATE
+    endwin();
+#endif
+
     kill(pids[0], SIGKILL);
     kill(pids[1], SIGKILL);
     kill(pids[2], SIGKILL);

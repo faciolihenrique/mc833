@@ -249,7 +249,7 @@ int thereIsColision(ServerCar* car1, ServerCar* car2) {
 void removeOldPackages(AdjList* List){
     No *atual = List->cabeca;
     while(atual != NULL) {
-        if(((ServerCar*) atual->v)->destroy <= time_running) {
+        if(((ServerCar*) atual->v)->destroy  <= time_running) {
 #ifndef NCURSES_SIMULATE
             printf("Removing %d\n\tDestroy: %ld\n\ttime_running: %ld\n",((ServerCar*) atual->v)->ID, ((ServerCar*) atual->v)->destroy ,time_running);
 #endif

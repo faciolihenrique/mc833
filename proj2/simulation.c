@@ -18,39 +18,46 @@ char CrossMap[SIZE_MAP][SIZE_MAP];
 
 extern unsigned long int time_running;
 extern unsigned long int ambulances;
-extern unsigned long int commands;
+extern unsigned long int c_continue;
+extern unsigned long int c_incraese_speed;
+extern unsigned long int c_decrease_speed;
 
 ////////////////////////////////////////////////////////////////////////////////
 
 int simulate(AdjList* CarList) {
-#ifdef SIMULATE1
     if (time_running == 0) {
         addVehicleList(CarList, create_vehicle(1, Car, 1, North));
-        addVehicleList(CarList, create_vehicle(2, Car, 1, West));
-        addVehicleList(CarList, create_vehicle(3, Car, 1, South));
-        addVehicleList(CarList, create_vehicle(4, Car, 1, East));
-    }
-#endif
-#ifdef SIMULATE2
-    if (time_running == 0) {
-        addVehicleList(CarList, create_vehicle(1, Car, 1, North));
-        addVehicleList(CarList, create_vehicle(2, Car, 1, West));
-        addVehicleList(CarList, create_vehicle(3, Car, 1, East));
-        addVehicleList(CarList, create_vehicle(4, Car, 1, South));
-        addVehicleList(CarList, create_vehicle(5, DoubleTruck, 3, South));
-        addVehicleList(CarList, create_vehicle(6, DoubleTruck, 2, West));
-    }
+        addVehicleList(CarList, create_vehicle(2, Truck, 2, West));
+        addVehicleList(CarList, create_vehicle(3, DoubleTruck, 1, South));
+        addVehicleList(CarList, create_vehicle(4, Car, 3, East));
+    } else if (time_running == 30) {
+        addVehicleList(CarList, create_vehicle(11, Truck, 2, North));
+        addVehicleList(CarList, create_vehicle(12, Car, 3, West));
+        addVehicleList(CarList, create_vehicle(13, Car, 4, South));
+        addVehicleList(CarList, create_vehicle(14, Truck, 1, East));
+    } else if  (time_running == 60) {
+        addVehicleList(CarList, create_vehicle(21, DoubleTruck, 1, North));
+        addVehicleList(CarList, create_vehicle(22, Car, 3, West));
+        addVehicleList(CarList, create_vehicle(23, Truck, 1, South));
+        addVehicleList(CarList, create_vehicle(24, Car, 2, East));
+    } else if  (time_running == 90) {
+        addVehicleList(CarList, create_vehicle(31, Car, 3, North));
+        addVehicleList(CarList, create_vehicle(32, Car, 2, West));
+        addVehicleList(CarList, create_vehicle(33, Car, 1, South));
+        addVehicleList(CarList, create_vehicle(34, Car, 5, East));
+    } else if (time_running == 120) {
 
-    if (time_running == 50) {
-        addVehicleList(CarList, create_vehicle(11, Car, 2, North));
-        addVehicleList(CarList, create_vehicle(21, Car, 2, West));
-        addVehicleList(CarList, create_vehicle(31, Car, 2, East));
-        addVehicleList(CarList, create_vehicle(41, Car, 2, South));
-        addVehicleList(CarList, create_vehicle(51, DoubleTruck, 3, South));
-        addVehicleList(CarList, create_vehicle(61, DoubleTruck, 3, West));
+    } else if  (time_running == 180) {
+        addVehicleList(CarList, create_vehicle(41, Truck, 3, North));
+        addVehicleList(CarList, create_vehicle(42, Truck, 5, West));
+        addVehicleList(CarList, create_vehicle(43, Truck, 2, South));
+        addVehicleList(CarList, create_vehicle(44, Truck, 3, East));
+    } else if  (time_running == 210) {
+        addVehicleList(CarList, create_vehicle(51, Car, 4, North));
+        addVehicleList(CarList, create_vehicle(52, DoubleTruck, 4, West));
+        addVehicleList(CarList, create_vehicle(53, DoubleTruck, 4, South));
+        addVehicleList(CarList, create_vehicle(54, Car, 4, East));
     }
-#endif
-
 
     update_cars(CarList);
 
@@ -265,13 +272,17 @@ void dealSecToServer(Vehicle* v) {
     printf("\tSpeed:  %d %d\n",v->car_speed, package->car_speed);
 #endif
 
-    if (package->ac == Increase || package->ac == Decrease) {
+    if (package->ac == Increase) {
         change_car_speed(v, package->car_speed);
-        commands++;
+        c_incraese_speed++;
+    } else if (package->ac == Decrease) {
+        change_car_speed(v, package->car_speed);
+        c_decrease_speed++;
     } else if (package->ac == Ambulance) {
         ambulances++;
         v->symbol = 'a';
-        // Chamar a ambulancia
+    } else {
+        c_continue++;
     }
     free(package);
 }
@@ -329,7 +340,6 @@ void* connectToTCPServer(Vehicle* v, ConectionType contype) {
         host_address = gethostbyname(CON_ADDRESS);
     }
 
-    /* Translate the host name to IP*/
     if (host_address == NULL){
         printf("Error on gethostbyname\n");
         return NULL;
@@ -435,7 +445,6 @@ void* connectToUDPServer(Vehicle* v, ConectionType contype) {
 
     /* Allocate the socket  and fills with the necessary info */
     bzero((char *)&socket_address, sizeof(socket_address));
-    //socket_address = (struct sockaddr_in*) calloc(1, sizeof(struct sockaddr_in*));
     socket_address.sin_family = AF_INET;
     socket_address.sin_port = htons(port);
     socket_address.sin_addr = *(struct in_addr*) host_address->h_addr_list[0];
